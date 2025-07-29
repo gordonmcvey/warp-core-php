@@ -1,0 +1,65 @@
+{
+    "name": "gordonmcvey/php-japi",
+    "type": "library",
+    "description": "Simple framework for building HTTP JSON APIs in PHP. 2.",
+    "authors": [
+        {
+            "name": "Tom Walder",
+            "email": "tom@docnet.nu"
+        }
+    ],
+    "keywords": [
+        "json",
+        "http",
+        "api",
+        "microservice"
+    ],
+    "homepage": "https://github.com/gordonmcvey/php-japi",
+    "license": "Apache-2.0",
+    "require": {
+        "php": ">=8.3.0",
+        "ext-json": "*",
+        "psr/log": "^2.0",
+        "gordonmcvey/httpsupport": "dev-dev-v2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12.0",
+        "php-coveralls/php-coveralls": "^2.7",
+        "squizlabs/php_codesniffer": "^3.11.3",
+        "phpstan/phpstan": "^2.1.6",
+        "overtrue/phplint": "^9.5.6",
+        "guzzlehttp/psr7": "^2.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "gordonmcvey\\JAPI\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "gordonmcvey\\JAPI\\test\\": "tests/",
+            "gordonmcvey\\JAPI\\examples\\": "examples/"
+        }
+    },
+    "include-path": ["src/"],
+    "repositories": [
+        {
+            "type": "github",
+            "url": "git@github.com:gordonmcvey/httpsupport.git"
+        }
+    ],
+    "scripts": {
+        "unittest": "vendor/bin/phpunit ./tests/unit",
+        "integrationtest": "vendor/bin/phpunit ./tests/integration",
+        "test": "vendor/bin/phpunit",
+        "phpcs": "vendor/bin/phpcs",
+        "lint": "vendor/bin/phplint -c ./phplint.yaml.dist",
+        "static": "vendor/bin/phpstan",
+        "all": [
+            "@test",
+            "@phpcs",
+            "@lint",
+            "@static"
+        ]
+    }
+}
