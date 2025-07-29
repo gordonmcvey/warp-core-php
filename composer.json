@@ -1,20 +1,22 @@
 {
-    "name": "gordonmcvey/php-japi",
+    "name": "gordonmcvey/warp-core-php",
     "type": "library",
-    "description": "Simple framework for building HTTP JSON APIs in PHP. 2.",
+    "description": "Small, fast and flexible microframework for building applications and APIs in PHP",
     "authors": [
         {
-            "name": "Tom Walder",
-            "email": "tom@docnet.nu"
+            "name": "Gordon McVey"
         }
     ],
     "keywords": [
         "json",
         "http",
         "api",
-        "microservice"
+        "microservice",
+        "framrwork",
+        "microframework",
+        "php"
     ],
-    "homepage": "https://github.com/gordonmcvey/php-japi",
+    "homepage": "https://github.com/gordonmcvey/warp-core-php",
     "license": "Apache-2.0",
     "require": {
         "php": ">=8.3.0",
