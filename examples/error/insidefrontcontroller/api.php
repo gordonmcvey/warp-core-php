@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\WarpCore\examples\japierrorcatching;
+namespace gordonmcvey\WarpCore\examples\error\insidefrontcontroller;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
@@ -27,13 +27,13 @@ use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use stdClass;
 
 /**
- * Example of error handling when a problem occurs inside JAPI's dispatch cycle.  Note that standard handling can only
+ * Example of error handling when a problem occurs inside the front controller.  Note that standard handling can only
  * deal with \Throwable errors.  Things outside this (like warnings, deprecation notices, etc) require additional logic
- * to handle and are dealt with in the japierroruncaught example.
+ * to handle and are dealt with in the outsidefrontcontroller example.
  */
 
 // Includes or Auto-loader
-define('BASE_PATH', dirname(__DIR__, 2));
+define('BASE_PATH', dirname(__DIR__, 3));
 
 require_once BASE_PATH . '/vendor/autoload.php';
 

@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\WarpCore\examples\japierrorcatching;
+namespace gordonmcvey\WarpCore\examples\error\outsidefrontcontroller;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
@@ -35,11 +35,11 @@ use gordonmcvey\WarpCore\ShutdownHandler;
 /**
  * Example of error handling when a non-throwable error occurs.  This sets up an error handler that converts old-style
  * PHP errors to ErrorExceptions.  It also adds a shutdown handler to produce the desired error output if an error
- * doesn't occur inside JAPI's try/catch dispatch block.
+ * doesn't occur inside the front controller's try/catch dispatch block.
  */
 
 // Includes or Auto-loader
-define('BASE_PATH', dirname(__DIR__, 2));
+define('BASE_PATH', dirname(__DIR__, 3));
 
 require_once BASE_PATH . '/vendor/autoload.php';
 

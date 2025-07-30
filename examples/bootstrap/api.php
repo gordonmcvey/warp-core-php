@@ -31,7 +31,7 @@ use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 
 /**
- * Example using the standard bootstrap as provided by JAPI
+ * Example using the library-supplied Bootstrap class
  */
 
 // Includes or Auto-loader

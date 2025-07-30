@@ -64,7 +64,7 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
             $controller = $this->getController($controllerSource, $request);
             $response = $this->dispatch($controller, $request);
         } catch (Throwable $e) {
-            $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
+            $this->getLogger()->error("[Core] [{$e->getCode()}] Error: {$e->getMessage()}");
             $response = $this->errorHandler->handle($e);
         }
         $this->responseSender->send($response);
@@ -90,7 +90,7 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
      * Go, Johnny, Go!
      *
      * If the controller to be dispatched implements MiddlewareProviderInterface, then its middleware will be added to
-     * the call stack on creation, then the JAPI middleware will be added.  Otherwise, only the JAPI middleware is
+     * the call stack on creation, then the global middleware will be added.  Otherwise, only the global§ middleware is
      * added to the call stack.
      */
     private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface

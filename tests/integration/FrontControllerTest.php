@@ -127,7 +127,6 @@ class FrontControllerTest extends TestCase
             ->method("handle")
         ;
 
-        // JAPI expectations
         $mockSender->expects($this->once())
             ->method("send")
             ->with($mockResponse)

@@ -169,7 +169,6 @@ class FrontControllerTest extends TestCase
             ->method("handle")
         ;
 
-        // JAPI expectations
         $mockSender->expects($this->once())
             ->method("send")
             ->with($mockResponse)
@@ -437,7 +436,7 @@ class FrontControllerTest extends TestCase
 
         $mockLogger->expects($this->once())
             ->method("error")
-            ->with("[JAPI] [500] Error: Unable to bootstrap")
+            ->with("[Core] [500] Error: Unable to bootstrap")
         ;
 
         $frontController->setLogger($mockLogger);
