@@ -37,8 +37,6 @@ use Throwable;
 
 /**
  * Front controller for our JSON APIs
- *
- * @author Tom Walder <tom@docnet.nu>
  */
 class FrontController implements MiddlewareProviderInterface, LoggerAwareInterface
 {

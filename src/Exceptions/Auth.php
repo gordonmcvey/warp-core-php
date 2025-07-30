@@ -24,8 +24,6 @@ use Exception;
 
 /**
  * Auth Exception
- *
- * @author Tom Walder
  */
 class Auth extends Exception
 {

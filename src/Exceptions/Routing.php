@@ -24,8 +24,6 @@ use Exception;
 
 /**
  * Routing Exception
- *
- * @author Tom Walder
  */
 class Routing extends Exception
 {

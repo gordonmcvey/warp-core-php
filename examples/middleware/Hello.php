@@ -31,8 +31,6 @@ use stdClass;
 
 /**
  * Example controller class
- *
- * @author Tom Walder <tom@docnet.nu>
  */
 class Hello implements MiddlewareProviderInterface, RequestHandlerInterface
 {

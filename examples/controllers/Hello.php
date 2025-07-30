@@ -28,8 +28,6 @@ use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 
 /**
  * Example controller class
- *
- * @author Tom Walder <tom@docnet.nu>
  */
 class Hello implements RequestHandlerInterface
 {
