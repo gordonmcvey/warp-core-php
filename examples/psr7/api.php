@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\JAPI\examples\psr7;
+namespace gordonmcvey\WarpCore\examples\psr7;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\psr7\ServerRequestAdaptor;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
-use gordonmcvey\JAPI\Bootstrap;
-use gordonmcvey\JAPI\controller\ControllerFactory;
-use gordonmcvey\JAPI\error\JsonErrorHandler;
-use gordonmcvey\JAPI\examples\controllers\Hello;
-use gordonmcvey\JAPI\JAPI;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
-use gordonmcvey\JAPI\routing\Router;
-use gordonmcvey\JAPI\routing\SingleControllerStrategy;
+use gordonmcvey\WarpCore\Bootstrap;
+use gordonmcvey\WarpCore\controller\ControllerFactory;
+use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\examples\controllers\Hello;
+use gordonmcvey\WarpCore\JAPI;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\Router;
+use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Utils;
 

@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI;
+namespace gordonmcvey\WarpCore;
 
 use ErrorException;
 

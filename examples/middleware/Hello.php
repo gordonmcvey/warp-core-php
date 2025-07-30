@@ -18,15 +18,15 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\examples\middleware;
+namespace gordonmcvey\WarpCore\examples\middleware;
 
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
 use stdClass;
 
 /**

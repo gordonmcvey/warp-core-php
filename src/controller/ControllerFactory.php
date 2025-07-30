@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\controller;
+namespace gordonmcvey\WarpCore\controller;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\JAPI\Exceptions\Routing;
-use gordonmcvey\JAPI\interface\controller\ControllerFactoryInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\interface\controller\ControllerFactoryInterface;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 
 /**
  * Simple Controller factory

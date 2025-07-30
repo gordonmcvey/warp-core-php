@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\Exceptions;
+namespace gordonmcvey\WarpCore\Exceptions;
 
 use Exception;
 

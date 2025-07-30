@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\integration\error;
+namespace gordonmcvey\WarpCore\test\integration\error;
 
 use ErrorException;
 use Exception;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\JAPI\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI;
+namespace gordonmcvey\WarpCore;
 
 use Exception;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
@@ -27,11 +27,11 @@ use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
-use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
 use Psr\Log\LoggerAwareInterface;
 use Throwable;
 

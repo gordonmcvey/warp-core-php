@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\middleware;
+namespace gordonmcvey\WarpCore\middleware;
 
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
 
 /**
  * Slot class

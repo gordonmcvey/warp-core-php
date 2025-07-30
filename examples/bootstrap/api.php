@@ -16,19 +16,19 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\JAPI\examples\bootstrap;
+namespace gordonmcvey\WarpCore\examples\bootstrap;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
-use gordonmcvey\JAPI\Bootstrap;
-use gordonmcvey\JAPI\controller\ControllerFactory;
-use gordonmcvey\JAPI\error\JsonErrorHandler;
-use gordonmcvey\JAPI\examples\controllers\Hello;
-use gordonmcvey\JAPI\JAPI;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
-use gordonmcvey\JAPI\routing\Router;
-use gordonmcvey\JAPI\routing\SingleControllerStrategy;
+use gordonmcvey\WarpCore\Bootstrap;
+use gordonmcvey\WarpCore\controller\ControllerFactory;
+use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\examples\controllers\Hello;
+use gordonmcvey\WarpCore\JAPI;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\Router;
+use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 
 /**
  * Example using the standard bootstrap as provided by JAPI

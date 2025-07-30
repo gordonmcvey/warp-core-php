@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\interface\middleware;
+namespace gordonmcvey\WarpCore\interface\middleware;
 
 /**
  * Middleware Provider Interface

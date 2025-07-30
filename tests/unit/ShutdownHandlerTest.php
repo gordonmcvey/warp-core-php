@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit;
+namespace gordonmcvey\WarpCore\test\unit;
 
 use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
-use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
-use gordonmcvey\JAPI\ShutdownHandler;
+use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\ShutdownHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

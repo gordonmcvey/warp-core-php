@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit\controller;
+namespace gordonmcvey\WarpCore\test\unit\controller;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\JAPI\controller\ControllerFactory;
-use gordonmcvey\JAPI\Exceptions\Routing;
-use gordonmcvey\JAPI\test\Controllers\FactoryInstantiated;
+use gordonmcvey\WarpCore\controller\ControllerFactory;
+use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\test\Controllers\FactoryInstantiated;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use stdClass;

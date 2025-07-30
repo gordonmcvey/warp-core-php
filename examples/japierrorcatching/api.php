@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\JAPI\examples\japierrorcatching;
+namespace gordonmcvey\WarpCore\examples\japierrorcatching;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
-use gordonmcvey\JAPI\error\JsonErrorHandler;
-use gordonmcvey\JAPI\JAPI;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\JAPI;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use stdClass;
 
 /**

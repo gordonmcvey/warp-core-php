@@ -18,19 +18,19 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\examples\middleware;
+namespace gordonmcvey\WarpCore\examples\middleware;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
-use gordonmcvey\JAPI\error\JsonErrorHandler;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\JAPI\JAPI;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
-use gordonmcvey\JAPI\routing\Router;
-use gordonmcvey\JAPI\routing\SingleControllerStrategy;
+use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\JAPI;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\Router;
+use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 
 /**
  * Example using custom bootstrap with middleware

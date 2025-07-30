@@ -34,13 +34,13 @@
     },
     "autoload": {
         "psr-4": {
-            "gordonmcvey\\JAPI\\": "src/"
+            "gordonmcvey\\WarpCore\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "gordonmcvey\\JAPI\\test\\": "tests/",
-            "gordonmcvey\\JAPI\\examples\\": "examples/"
+            "gordonmcvey\\WarpCore\\test\\": "tests/",
+            "gordonmcvey\\WarpCore\\examples\\": "examples/"
         }
     },
     "include-path": ["src/"],

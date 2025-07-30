@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\interface\routing;
+namespace gordonmcvey\WarpCore\interface\routing;
 
 /**
  * Routing strategy interface

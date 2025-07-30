@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\interface\error;
+namespace gordonmcvey\WarpCore\interface\error;
 
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use Throwable;

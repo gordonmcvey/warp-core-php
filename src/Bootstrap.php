@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI;
+namespace gordonmcvey\WarpCore;
 
 use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\JAPI\interface\controller\ControllerFactoryInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\routing\RouterInterface;
+use gordonmcvey\WarpCore\interface\controller\ControllerFactoryInterface;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\routing\RouterInterface;
 
 /**
  * Simple bootstrap implementation

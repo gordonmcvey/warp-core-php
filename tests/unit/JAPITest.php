@@ -18,20 +18,20 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit;
+namespace gordonmcvey\WarpCore\test\unit;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
-use gordonmcvey\JAPI\Exceptions\AccessDenied;
-use gordonmcvey\JAPI\Exceptions\Auth;
-use gordonmcvey\JAPI\Exceptions\Routing;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
-use gordonmcvey\JAPI\JAPI;
-use gordonmcvey\JAPI\middleware\CallStack;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\Exceptions\AccessDenied;
+use gordonmcvey\WarpCore\Exceptions\Auth;
+use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\JAPI;
+use gordonmcvey\WarpCore\middleware\CallStack;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

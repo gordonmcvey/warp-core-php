@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit\middleware;
+namespace gordonmcvey\WarpCore\test\unit\middleware;
 
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
-use gordonmcvey\JAPI\middleware\Slot;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\middleware\Slot;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

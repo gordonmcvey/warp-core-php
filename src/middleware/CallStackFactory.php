@@ -18,10 +18,10 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\middleware;
+namespace gordonmcvey\WarpCore\middleware;
 
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
 
 /**
  * Callstack Factory

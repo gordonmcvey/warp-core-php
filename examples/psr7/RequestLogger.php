@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\examples\psr7;
+namespace gordonmcvey\WarpCore\examples\psr7;
 
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
 
 class RequestLogger implements MiddlewareInterface
 {
