@@ -25,8 +25,8 @@ use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\ErrorToException;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
+use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\JAPI;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
@@ -60,7 +60,7 @@ register_shutdown_function(new ShutdownHandler($responseSender, $errorHandler));
  */
 trigger_error("whoops", E_USER_ERROR);
 
-(new JAPI(new CallStackFactory(), $errorHandler, $responseSender))
+(new FrontController(new CallStackFactory(), $errorHandler, $responseSender))
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
             $router = new Router(new SingleControllerStrategy(Hello::class));

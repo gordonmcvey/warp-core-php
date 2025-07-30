@@ -40,7 +40,7 @@ use Throwable;
  *
  * @author Tom Walder <tom@docnet.nu>
  */
-class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
+class FrontController implements MiddlewareProviderInterface, LoggerAwareInterface
 {
     use MiddlewareProviderTrait;
     use HasLogger;

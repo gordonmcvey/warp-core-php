@@ -25,9 +25,9 @@ use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\WarpCore\JAPI;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
@@ -42,7 +42,7 @@ define('BASE_PATH', dirname(__DIR__, 2));
 require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
-(new JAPI(
+(new FrontController(
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender(),
