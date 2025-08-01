@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<ruleset name="php-japi">
-    <description>PHP JAPI ruleset</description>
+<ruleset name="warp-core-php">
+    <description>Warp Core ruleset</description>
     <arg name="colors"/>
     <arg value="sp"/>
     <config name="show_warnings" value="0"/>

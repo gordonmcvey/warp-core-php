@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\routing;
+namespace gordonmcvey\WarpCore\routing;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\JAPI\Exceptions\Routing;
-use gordonmcvey\JAPI\interface\routing\RouterInterface;
-use gordonmcvey\JAPI\interface\routing\RoutingStrategyInterface;
+use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\interface\routing\RouterInterface;
+use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 
 /**
  * Router class

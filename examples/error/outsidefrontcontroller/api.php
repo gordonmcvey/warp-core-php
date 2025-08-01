@@ -16,30 +16,30 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\JAPI\examples\japierrorcatching;
+namespace gordonmcvey\WarpCore\examples\error\outsidefrontcontroller;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
-use gordonmcvey\JAPI\error\JsonErrorHandler;
-use gordonmcvey\JAPI\ErrorToException;
-use gordonmcvey\JAPI\examples\controllers\Hello;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\JAPI;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
-use gordonmcvey\JAPI\routing\Router;
-use gordonmcvey\JAPI\routing\SingleControllerStrategy;
-use gordonmcvey\JAPI\ShutdownHandler;
+use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\ErrorToException;
+use gordonmcvey\WarpCore\examples\controllers\Hello;
+use gordonmcvey\WarpCore\FrontController;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\Router;
+use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
+use gordonmcvey\WarpCore\ShutdownHandler;
 
 /**
  * Example of error handling when a non-throwable error occurs.  This sets up an error handler that converts old-style
  * PHP errors to ErrorExceptions.  It also adds a shutdown handler to produce the desired error output if an error
- * doesn't occur inside JAPI's try/catch dispatch block.
+ * doesn't occur inside the front controller's try/catch dispatch block.
  */
 
 // Includes or Auto-loader
-define('BASE_PATH', dirname(__DIR__, 2));
+define('BASE_PATH', dirname(__DIR__, 3));
 
 require_once BASE_PATH . '/vendor/autoload.php';
 
@@ -60,7 +60,7 @@ register_shutdown_function(new ShutdownHandler($responseSender, $errorHandler));
  */
 trigger_error("whoops", E_USER_ERROR);
 
-(new JAPI(new CallStackFactory(), $errorHandler, $responseSender))
+(new FrontController(new CallStackFactory(), $errorHandler, $responseSender))
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
             $router = new Router(new SingleControllerStrategy(Hello::class));

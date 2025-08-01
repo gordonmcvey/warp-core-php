@@ -18,7 +18,7 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI;
+namespace gordonmcvey\WarpCore;
 
 use Exception;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
@@ -27,20 +27,18 @@ use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
-use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
 use Psr\Log\LoggerAwareInterface;
 use Throwable;
 
 /**
  * Front controller for our JSON APIs
- *
- * @author Tom Walder <tom@docnet.nu>
  */
-class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
+class FrontController implements MiddlewareProviderInterface, LoggerAwareInterface
 {
     use MiddlewareProviderTrait;
     use HasLogger;
@@ -64,7 +62,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
             $controller = $this->getController($controllerSource, $request);
             $response = $this->dispatch($controller, $request);
         } catch (Throwable $e) {
-            $this->getLogger()->error("[JAPI] [{$e->getCode()}] Error: {$e->getMessage()}");
+            $this->getLogger()->error("[Core] [{$e->getCode()}] Error: {$e->getMessage()}");
             $response = $this->errorHandler->handle($e);
         }
         $this->responseSender->send($response);
@@ -90,7 +88,7 @@ class JAPI implements MiddlewareProviderInterface, LoggerAwareInterface
      * Go, Johnny, Go!
      *
      * If the controller to be dispatched implements MiddlewareProviderInterface, then its middleware will be added to
-     * the call stack on creation, then the JAPI middleware will be added.  Otherwise, only the JAPI middleware is
+     * the call stack on creation, then the global middleware will be added.  Otherwise, only the global§ middleware is
      * added to the call stack.
      */
     private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface

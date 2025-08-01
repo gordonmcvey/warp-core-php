@@ -1,10 +1,10 @@
 <?php
 
-namespace gordonmcvey\JAPI\test\Controllers;
+namespace gordonmcvey\WarpCore\test\Controllers;
 
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 
 readonly class FactoryInstantiated implements RequestHandlerInterface
 {

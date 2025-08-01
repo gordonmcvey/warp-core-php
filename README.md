@@ -1,119 +1,74 @@
-[![Build Status](https://api.travis-ci.org/DocnetUK/php-japi.svg?branch=2.0)](https://travis-ci.org/DocnetUK/php-japi)
-[![Coverage Status](https://coveralls.io/repos/DocnetUK/php-japi/badge.svg?branch=2.0)](https://coveralls.io/r/DocnetUK/php-japi)
+# Warp Core PHP Microframework
 
-# PHP JSON API Library #
+Warp Core is a microframework with a focus on being small, fast, flexible, robust, and on following best practice.
 
-Version 2 of our library for building HTTP JSON APIs in PHP.
+* 🐁 **Small**: We aim to keep Warp Core as small as possible.  Excluding things like interfaces, tests, examples and other non-executable code, Warp Core doesn't exceed more than a couple of dozen classes.  The entire framework is focused on providing:
+  * Request handling
+  * Routing
+  * Response dispatching
+  * Middleware
+  * Error handling
+  * Nothing else!
+* 🔤 **Simple**: We don't think software development should be rocket science.  A small codebase is a codebase that is easy to understand and work with.
+* 🚀 **Fast**: Keeping it lean keeps it fast.  We try to avoid expensive operations such as string manipulation with regex if there is something simpler we can use to achieve the same goal 
+* 🪄 **Flexible**: Warp Core embraces the philosophy of loose coupling and design by contract.  As such, almost every aspect of the framework can be supplemented or replaced with your own implementation.  It also supports middleware, providing you many ways to build a rich application on a simple core
+* 🚜 **Robust**: Great effort has been put into keeping Warp Core from blowing up in your face.  Every effort has been made to prevent or catch every conceivable error, and there is a comprehensive suite of tests included to validate that everything does what it should
+* 🤖 **Modern**: We try to keep up with modern PHP features and industry best practices in the codebase, both for the sake of security and developer convenience
 
-Some major changes in version 2
-- Adopt better code practices, allowing for Dependency Injection
-- Adopt our new "Single Responsibility Controller" approach
-- Decouple Router from JAPI container
-- Use PSR logging
-- Adopt PHP 5.4 minimum version
+## Requirements
 
-As we expand our Service Orientated Architecture (SOA) at Docnet, we're using this more and more - so I hope it's useful
-to someone else ;)
+Warp Core has the following requirements for installation in a production environment:
 
-Intended to use HTTP status codes wherever possible for passing success/failure etc. back to the client.
+* PHP 8.3 or higher
+* [HTTP Support](https://github.com/gordonmcvey/httpsupport) library
 
-## Single Responsibility Controller ##
+### For development
 
-We've adopted a new (for us) take on routing and controller complexity in 2.0. As such, where previously, you might have 
-had multiple actions (methods) on the same class like this:
+In a development environment, we also require the following libraries: 
 
-- `BasketController::fetchDetailAction()`
-- `BasketController::addAction()`
-- `BasketController::removeAction()`
-- `BasketController::emptyAction()`
+* PHPUnit 12
+* PHP Code Sniffer
+* PHPStan
+* PHP Lint
 
-Now this would be 4 name-spaced classes, like this
+## Installation
 
-- `Basket\FetchDetail`
-- `Basket\Add`
-- `Basket\Remove`
-- `Basket\Empty`
+* add Warp Core to the `repositories` section of your `composer.json` file
 
-This allows for 
-- Greater code modularity
-- Smaller classes
-- Much easier Dependency Injection via `__construct()` as each "action" is it's own class.
+```json
+{
+  "repositories": [
+    {
+      "type": "github",
+      "url": "git@github.com:gordonmcvey/warp-core-php.git"
+    }
+  ]
+}
+```
+* Run composer
 
-You can still share common code via extension/composition - whatever takes your fancy!
-
-JAPI will call the `dispatch()` method on your controller.
-
-### SOLID Routing ###
-
-The bundled router will accept any depth of controller namespace, like this
-
-- `/one` => `One`
-- `/one/two` => `One\Two`
-- `/one/two/three` => `One\Two\Three`
-
-When you construct the Router, you can give it a "root" namespace, like this:
-
-```php
-$router = new \Docnet\JAPI\SolidRouter('\\Docnet\\App\\Controller\\');
+```bash
+composer require gordonmcvey/warp-core-php
 ```
 
-Which results in this routing:
+## Simple Example
 
-- `/one/two` => `\Docnet\App\Controller\One\Two`
-
-### Static Routes ###
-
-If you have some static routes you want to set up, that's no problem - they also bypass the routing regex code
-and so make calls very slightly faster.
-
-Add a single custom route
+Assuming you have a controller called `Hello`, and that you want all incoming requests to route to the `Hello` controller regardless of path, request body, etc.
 
 ```php
-$router = new \Docnet\JAPI\SolidRouter();
-$router->addRoute('/hello', '\\Some\\Controller');
+require_once '/vendor/autoload.php';
+
+(new FrontController(
+    new CallStackFactory(),
+    new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
+    new ResponseSender(),
+))->bootstrap(
+    new Bootstrap(
+        new Router(new SingleControllerStrategy(Hello::class)),
+        new ControllerFactory(),
+    ),
+    Request::fromSuperGlobals(),
+);
 ```
 
-Or set a load of them
-
-```php
-$router = new \Docnet\JAPI\SolidRouter();
-$router->setRoutes([
-    '/hello' => '\\Some\\Controller',
-    '/world' => '\\Other\\Controller'
-]);
-```
-
-## Installation ##
-
-Here's the require line for Composer users (during 2-series development)...
-
-`"docnet/php-japi": "2.0.*@dev"`
-
-...or just download and use the src folder.
-
-## Bootstrapping ##
-
-Assuming...
-
-- You've got Apache/whatever set up to route all requests to this file
-- An auto-loader is present (like the Composer example here) or you've included all files necessary
-
-...then something like this is all the code you need in your `index.php`
-
-```php
-(new \Docnet\JAPI())->bootstrap(function(){
-
-    $obj_router = new \Docnet\JAPI\SolidRouter();
-    $obj_router->route();
-
-    $str_controller = $obj_router->getController();
-    return new $str_controller();
-
-});
-```
-
-See the examples folder for a working demo (api.php).
-
-## Coding Standards ##
-
-Desired adherence to [PSR-2](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md). Uses [PSR-3](https://github.com/php-fig/log) logging.
+There are a variety of additional examples provided in the `examples/` directory

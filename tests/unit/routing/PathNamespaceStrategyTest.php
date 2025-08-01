@@ -18,9 +18,9 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit\routing;
+namespace gordonmcvey\WarpCore\test\unit\routing;
 
-use gordonmcvey\JAPI\routing\PathNamespaceStrategy;
+use gordonmcvey\WarpCore\routing\PathNamespaceStrategy;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

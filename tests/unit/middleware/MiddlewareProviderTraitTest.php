@@ -18,11 +18,11 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit\middleware;
+namespace gordonmcvey\WarpCore\test\unit\middleware;
 
-use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\JAPI\middleware\MiddlewareProviderTrait;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

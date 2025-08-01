@@ -18,11 +18,11 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\interface\middleware;
+namespace gordonmcvey\WarpCore\interface\middleware;
 
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 
 /**
  * Middleware interface

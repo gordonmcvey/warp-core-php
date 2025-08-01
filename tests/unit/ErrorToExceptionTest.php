@@ -18,10 +18,10 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit;
+namespace gordonmcvey\WarpCore\test\unit;
 
 use ErrorException;
-use gordonmcvey\JAPI\ErrorToException;
+use gordonmcvey\WarpCore\ErrorToException;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

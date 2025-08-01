@@ -18,14 +18,12 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\Exceptions;
+namespace gordonmcvey\WarpCore\Exceptions;
 
 use Exception;
 
 /**
  * Auth Exception
- *
- * @author Tom Walder
  */
 class Auth extends Exception
 {

@@ -18,9 +18,9 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\unit\routing;
+namespace gordonmcvey\WarpCore\test\unit\routing;
 
-use gordonmcvey\JAPI\routing\SingleControllerStrategy;
+use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

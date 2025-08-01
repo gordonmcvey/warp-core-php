@@ -18,12 +18,12 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI;
+namespace gordonmcvey\WarpCore;
 
 use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
-use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 /**

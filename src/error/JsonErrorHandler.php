@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\error;
+namespace gordonmcvey\WarpCore\error;
 
 use ErrorException;
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
 use Throwable;
 
 /**

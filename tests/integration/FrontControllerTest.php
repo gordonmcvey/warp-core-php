@@ -18,28 +18,28 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\JAPI\test\integration;
+namespace gordonmcvey\WarpCore\test\integration;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
-use gordonmcvey\JAPI\Exceptions\AccessDenied;
-use gordonmcvey\JAPI\Exceptions\Auth;
-use gordonmcvey\JAPI\Exceptions\Routing;
-use gordonmcvey\JAPI\interface\controller\RequestHandlerInterface;
-use gordonmcvey\JAPI\interface\error\ErrorHandlerInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareInterface;
-use gordonmcvey\JAPI\interface\middleware\MiddlewareProviderInterface;
-use gordonmcvey\JAPI\JAPI;
-use gordonmcvey\JAPI\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\Exceptions\AccessDenied;
+use gordonmcvey\WarpCore\Exceptions\Auth;
+use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\FrontController;
+use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
-class JAPITest extends TestCase
+class FrontControllerTest extends TestCase
 {
     /**
      * @throws Exception
@@ -69,8 +69,8 @@ class JAPITest extends TestCase
             ->willReturnSelf()
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap($mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap($mockController, $mockRequest);
     }
 
     /**
@@ -101,8 +101,8 @@ class JAPITest extends TestCase
             ->willReturnSelf()
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap(fn() => $mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap(fn() => $mockController, $mockRequest);
     }
 
     /**
@@ -127,15 +127,14 @@ class JAPITest extends TestCase
             ->method("handle")
         ;
 
-        // JAPI expectations
         $mockSender->expects($this->once())
             ->method("send")
             ->with($mockResponse)
             ->willReturnSelf()
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap(
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap(
             new readonly class ($mockController) {
                 public function __construct(private RequestHandlerInterface $controller)
                 {
@@ -201,8 +200,8 @@ class JAPITest extends TestCase
             ->willReturnSelf()
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->addMiddleware($middleware)->bootstrap($mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->addMiddleware($middleware)->bootstrap($mockController, $mockRequest);
     }
 
     /**
@@ -266,8 +265,8 @@ class JAPITest extends TestCase
             ->willReturnSelf()
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap($mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap($mockController, $mockRequest);
     }
 
     /**
@@ -293,8 +292,8 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap(fn() => "Hello", $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap(fn() => "Hello", $mockRequest);
     }
 
     /**
@@ -320,8 +319,8 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap(fn() => throw new Routing(), $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap(fn() => throw new Routing(), $mockRequest);
     }
 
     /**
@@ -354,8 +353,8 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap($mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap($mockController, $mockRequest);
     }
 
     /**
@@ -388,8 +387,8 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap($mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap($mockController, $mockRequest);
     }
 
     /**
@@ -422,8 +421,8 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap($mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap($mockController, $mockRequest);
     }
 
     /**
@@ -456,7 +455,7 @@ class JAPITest extends TestCase
             ->willReturn($mockResponse)
         ;
 
-        $japi = new JAPI(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $japi->bootstrap($mockController, $mockRequest);
+        $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
+        $frontController->bootstrap($mockController, $mockRequest);
     }
 }
