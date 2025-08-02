@@ -29,7 +29,7 @@ use gordonmcvey\WarpCore\interface\routing\RouterInterface;
  * Simple bootstrap implementation
  *
  * Developers are free to use any method of bootstrapping they like, so long as they return a class that implements
- * RequestHandlerInterface, but in most cases this basic bootstrap class should suffice.
+ * RequestHandlerInterface, but in most cases, this basic bootstrap class should suffice.
  */
 readonly class Bootstrap
 {

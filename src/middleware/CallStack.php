@@ -32,7 +32,7 @@ use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
  * As middleware processing is handled in a stack, it is run in the reverse order in which it was added and returns in
  * the opposite order from that.  The upshot of this is that middleware that processes the request does the processing
  * in last-to-first order, and middleware that processes the response is run in first-to-last order (which makes sense
- * if you think about it, though it's not immideately obvious).  You can think of it as a request going from the
+ * if you think about it, though it's not immediately obvious).  You can think of it as a request going from the
  * "outside" (The entry point) to the "inside" (the root of the stack) during the request phase, then back to the
  * "outside" during the response phase.  Bear this in mind when deciding on the order in which you add middleware to
  * the stack (eg, middleware that handles authentication should be added last as we'd want it to run first)

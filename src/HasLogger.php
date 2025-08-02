@@ -25,6 +25,8 @@ use Psr\Log\NullLogger;
 
 /**
  * HasLogger Trait
+ *
+ * @deprecated Replace with ?-> notation
  */
 trait HasLogger
 {

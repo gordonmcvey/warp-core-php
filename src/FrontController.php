@@ -43,9 +43,6 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
     use MiddlewareProviderTrait;
     use HasLogger;
 
-    /**
-     * Hook up the shutdown function so we always send nice JSON error responses
-     */
     public function __construct(
         private readonly CallStackFactory $callStackFactory,
         private readonly ErrorHandlerInterface $errorHandler,
@@ -84,15 +81,13 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
         return $controller;
     }
 
-    /**
-     * Go, Johnny, Go!
-     *
-     * If the controller to be dispatched implements MiddlewareProviderInterface, then its middleware will be added to
-     * the call stack on creation, then the global middleware will be added.  Otherwise, only the global§ middleware is
-     * added to the call stack.
-     */
     private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface
     {
+        /*
+         * If the controller to be dispatched implements MiddlewareProviderInterface, then its middleware will be added
+         * to the call stack on creation, then the global middleware will be added.  Otherwise, only the global
+         * middleware is added to the call stack.
+         */
         $callStack = $this->callStackFactory->make($controller, $this);
         return $callStack->dispatch($request) ?? new Response(SuccessCodes::NO_CONTENT, '');
     }
