@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\examples\middleware;
 
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\httpsupport\interface\request\RequestInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
 
