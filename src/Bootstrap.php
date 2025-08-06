@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore;
 
-use gordonmcvey\httpsupport\request\RequestInterface;
+use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\WarpCore\interface\controller\ControllerFactoryInterface;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\interface\routing\RouterInterface;
