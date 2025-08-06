@@ -21,9 +21,9 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\test\integration;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
+use gordonmcvey\httpsupport\interface\request\RequestInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
 use gordonmcvey\WarpCore\Exceptions\AccessDenied;
 use gordonmcvey\WarpCore\Exceptions\Auth;
 use gordonmcvey\WarpCore\Exceptions\Routing;

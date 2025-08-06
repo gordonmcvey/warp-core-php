@@ -2,8 +2,8 @@
 
 namespace gordonmcvey\WarpCore\test\Controllers;
 
-use gordonmcvey\httpsupport\request\RequestInterface;
-use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\httpsupport\interface\request\RequestInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 
 readonly class FactoryInstantiated implements RequestHandlerInterface
