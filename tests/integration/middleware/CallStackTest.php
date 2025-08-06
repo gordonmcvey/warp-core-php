@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\test\integration\middleware;
 
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
+use gordonmcvey\httpsupport\interface\request\RequestInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\request\payload\ArrayPayloadHandler;
 use gordonmcvey\httpsupport\request\Request;
-use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\Response;
-use gordonmcvey\httpsupport\response\ResponseInterface;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
 use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;

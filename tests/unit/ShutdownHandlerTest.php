@@ -6,8 +6,8 @@ namespace gordonmcvey\WarpCore\test\unit;
 
 use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
-use gordonmcvey\httpsupport\response\ResponseInterface;
-use gordonmcvey\httpsupport\response\sender\ResponseSenderInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
 use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
 use gordonmcvey\WarpCore\ShutdownHandler;
 use PHPUnit\Framework\Attributes\Test;
