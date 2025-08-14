@@ -71,4 +71,4 @@ require_once '/vendor/autoload.php';
 );
 ```
 
-There are a variety of additional examples provided in the `examples/` directory
+There are a variety of additional examples provided in the `examples/` directory.  A collection of skeleton apps has also been made available in the [Warp Core example apps](https://github.com/gordonmcvey/warp-core-example-app) repo
