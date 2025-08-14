@@ -19,8 +19,8 @@
 namespace gordonmcvey\WarpCore\examples\error\outsidefrontcontroller;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\request\Request;
-use gordonmcvey\httpsupport\request\RequestInterface;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\ErrorToException;

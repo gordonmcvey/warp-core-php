@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\interface\error;
 
-use gordonmcvey\httpsupport\response\ResponseInterface;
+use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use Throwable;
 
 /**
