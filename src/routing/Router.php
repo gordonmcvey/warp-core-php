@@ -43,7 +43,7 @@ readonly class Router implements RouterInterface
     private const string SAFE_PATH = "/^(?:(?:\/[\w-]+)+|\/)$/";
 
     /**
-     * Additiona regex to detect potentially suspicious character sequences
+     * Additional regex to detect potentially suspicious character sequences
      *
      * @link https://regex101.com/r/mXCVyB/1
      */
@@ -52,11 +52,11 @@ readonly class Router implements RouterInterface
     /**
      * @var array<array-key, RoutingStrategyInterface>
      */
-    private array $routers;
+    private array $routingStrategies;
 
-    public function __construct(RoutingStrategyInterface ...$routers)
+    public function __construct(RoutingStrategyInterface ...$routingStrategies)
     {
-        $this->routers = $routers;
+        $this->routingStrategies = $routingStrategies;
     }
 
     /**
@@ -67,11 +67,11 @@ readonly class Router implements RouterInterface
         $path = $this->extractPath($request->uri());
         $this->validatePath($path);
 
-        foreach ($this->routers as $router) {
-            $controllerClass = $router->route($path);
+        foreach ($this->routingStrategies as $strategy) {
+            $controllerClassName = $strategy->route($path);
 
-            if (null !== $controllerClass) {
-                return $controllerClass;
+            if (null !== $controllerClassName) {
+                return $controllerClassName;
             }
         }
 
@@ -88,15 +88,15 @@ readonly class Router implements RouterInterface
      */
     private function extractPath(string $uri): string
     {
-        $parsed = parse_url($uri, PHP_URL_PATH);
-        if (!$parsed) {
+        $parsedUri = parse_url($uri, PHP_URL_PATH);
+        if (!$parsedUri) {
             throw new Routing(
                 sprintf("Unable to parse URI path '%s'", $uri),
                 ClientErrorCodes::BAD_REQUEST->value
             );
         }
 
-        return (string) $parsed;
+        return (string) $parsedUri;
     }
 
     /**
