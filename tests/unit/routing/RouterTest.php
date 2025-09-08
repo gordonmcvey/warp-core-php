@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\test\unit\routing;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\WarpCore\Exceptions\Routing;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
@@ -44,12 +45,15 @@ class RouterTest extends TestCase
         $request = $this->createMock(RequestInterface::class);
 
         $request->expects($this->once())->method("uri")->willReturn($path);
+        $request->expects($this->once())->method("verb")->willReturn(Verbs::GET);
+
         $strategy
             ->expects($this->once())
             ->method("route")
             ->with($path)
             ->willReturn($controller)
         ;
+        $strategy->expects($this->once())->method("forVerbs")->willReturn([Verbs::GET]);
 
         $router = new Router($strategy);
 
@@ -102,14 +106,18 @@ class RouterTest extends TestCase
         $request = $this->createMock(RequestInterface::class);
 
         $request->expects($this->once())->method("uri")->willReturn("/foo/bar");
+        $request->expects($this->once())->method("verb")->willReturn(Verbs::GET);
+
         $strategy1
             ->expects($this->once())
             ->method("route")
             ->with("/foo/bar")
             ->willReturn("RoutedController")
         ;
+        $strategy1->expects($this->once())->method("forVerbs")->willReturn([Verbs::GET]);
 
-        $strategy2->expects($this->never())->method("route");
+        $strategy2->expects($this->once())->method("route");
+        $strategy2->expects($this->never())->method("forVerbs")->willReturn([Verbs::GET]);
 
         $router = new Router($strategy1, $strategy2);
 
@@ -203,5 +211,87 @@ class RouterTest extends TestCase
         $this->expectExceptionCode(ClientErrorCodes::NOT_FOUND->value);
 
         $router->route($request);
+    }
+
+    /**
+     * @throws Exception
+     * @throws Routing
+     */
+    #[Test]
+    public function itRoutesToTheRightControllerForTheVerb(): void
+    {
+        $path = "/foo/bar/baz";
+
+        $getStrategy = $this->createMock(RoutingStrategyInterface::class);
+        $postStrategy = $this->createMock(RoutingStrategyInterface::class);
+        $getRequest = $this->createMock(RequestInterface::class);
+        $postRequest = $this->createMock(RequestInterface::class);
+
+        $getRequest->expects($this->any())->method("uri")->willReturn($path);
+        $getRequest->expects($this->any())->method("verb")->willReturn(Verbs::GET);
+
+        $postRequest->expects($this->any())->method("uri")->willReturn($path);
+        $postRequest->expects($this->any())->method("verb")->willReturn(Verbs::POST);
+
+        $getStrategy
+            ->expects($this->any())
+            ->method("route")
+            ->with($path)
+            ->willReturn("GetController")
+        ;
+
+        $getStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::GET]);
+
+        $postStrategy
+            ->expects($this->any())
+            ->method("route")
+            ->with($path)
+            ->willReturn("PostController")
+        ;
+
+        $postStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::POST]);
+
+        $router = new Router($getStrategy, $postStrategy);
+
+        $this->assertSame("GetController", $router->route($getRequest));
+        $this->assertSame("PostController", $router->route($postRequest));
+    }
+
+    #[Test]
+    public function itThrowsMethodNotAllowedForMethodThatDoesntMatch(): void
+    {
+        $path = "/foo/bar/baz";
+
+        $getStrategy = $this->createMock(RoutingStrategyInterface::class);
+        $postStrategy = $this->createMock(RoutingStrategyInterface::class);
+        $putRequest = $this->createMock(RequestInterface::class);
+
+        $putRequest->expects($this->any())->method("uri")->willReturn($path);
+        $putRequest->expects($this->any())->method("verb")->willReturn(Verbs::PUT);
+
+        $getStrategy
+            ->expects($this->any())
+            ->method("route")
+            ->with($path)
+            ->willReturn("GetController")
+        ;
+
+        $getStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::GET]);
+
+        $postStrategy
+            ->expects($this->any())
+            ->method("route")
+            ->with($path)
+            ->willReturn("PostController")
+        ;
+
+        $postStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::POST]);
+
+        $router = new Router($getStrategy, $postStrategy);
+
+        $this->expectException(Routing::class);
+        $this->expectExceptionCode(ClientErrorCodes::METHOD_NOT_ALLOWED->value);
+
+        $router->route($putRequest);
     }
 }

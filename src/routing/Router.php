@@ -43,7 +43,7 @@ readonly class Router implements RouterInterface
     private const string SAFE_PATH = "/^(?:(?:\/[\w-]+)+|\/)$/";
 
     /**
-     * Additiona regex to detect potentially suspicious character sequences
+     * Additional regex to detect potentially suspicious character sequences
      *
      * @link https://regex101.com/r/mXCVyB/1
      */
@@ -52,33 +52,61 @@ readonly class Router implements RouterInterface
     /**
      * @var array<array-key, RoutingStrategyInterface>
      */
-    private array $routers;
+    private array $routingStrategies;
 
-    public function __construct(RoutingStrategyInterface ...$routers)
+    public function __construct(RoutingStrategyInterface ...$routingStrategies)
     {
-        $this->routers = $routers;
+        $this->routingStrategies = $routingStrategies;
     }
 
     /**
-     * @throws Routing
+     * @throws Routing if the request cannot be resolved to a controller class
      */
     public function route(RequestInterface $request): string
     {
-        $path = $this->extractPath($request->uri());
+        $uri = $request->uri();
+        $path = $this->extractPath($uri);
         $this->validatePath($path);
 
-        foreach ($this->routers as $router) {
-            $controllerClass = $router->route($path);
+        $routesForPath = $this->getRoutesForPath($path, $uri);
 
-            if (null !== $controllerClass) {
-                return $controllerClass;
+        $verb = $request->verb();
+
+        foreach ($routesForPath as $routeSpec) {
+            if (in_array($verb, $routeSpec->verbs, true)) {
+                return $routeSpec->controllerClass;
             }
         }
 
         throw new Routing(
-            sprintf("No controller found for URI path %s", $request->uri()),
-            ClientErrorCodes::NOT_FOUND->value,
+            sprintf("No suitable controllers found for URI path %s that support method %s", $uri, $verb->value),
+            ClientErrorCodes::METHOD_NOT_ALLOWED->value,
         );
+    }
+
+    /**
+     * @return array<RouteSpec>
+     * @throws Routing If no strategies match the request path
+     */
+    private function getRoutesForPath(string $uri, string $path): array
+    {
+        $strategiesForPath = [];
+
+        foreach ($this->routingStrategies as $strategy) {
+            $className = $strategy->route($path);
+            if (null !== $className) {
+                $strategiesForPath[] = new RouteSpec($className, ...$strategy->forVerbs());
+            }
+        }
+
+        if (empty($strategiesForPath)) {
+            throw new Routing(
+                sprintf("No suitable controller found for URI path %s (for any method)", $uri),
+                ClientErrorCodes::NOT_FOUND->value,
+            );
+        }
+
+        return $strategiesForPath;
     }
 
     /**
@@ -88,15 +116,15 @@ readonly class Router implements RouterInterface
      */
     private function extractPath(string $uri): string
     {
-        $parsed = parse_url($uri, PHP_URL_PATH);
-        if (!$parsed) {
+        $parsedUri = parse_url($uri, PHP_URL_PATH);
+        if (!$parsedUri) {
             throw new Routing(
                 sprintf("Unable to parse URI path '%s'", $uri),
                 ClientErrorCodes::BAD_REQUEST->value
             );
         }
 
-        return (string) $parsed;
+        return (string) $parsedUri;
     }
 
     /**

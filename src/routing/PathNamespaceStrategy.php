@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\routing;
 
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 
 /**
@@ -44,10 +45,16 @@ use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 readonly class PathNamespaceStrategy implements RoutingStrategyInterface
 {
     /**
+     * @var array<Verbs>
+     */
+    private array $verbs;
+
+    /**
      * @param string $controllerNamespace The namespace controllers will be located under, eg vendor\project\controllers
      */
-    public function __construct(private string $controllerNamespace = '')
+    public function __construct(private string $controllerNamespace = "", Verbs ...$verbs)
     {
+        $this->verbs = $verbs;
     }
 
     public function route(string $path): ?string
@@ -65,5 +72,10 @@ readonly class PathNamespaceStrategy implements RoutingStrategyInterface
                 ))
             ),
         );
+    }
+
+    public function forVerbs(): array
+    {
+        return $this->verbs;
     }
 }

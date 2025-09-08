@@ -16,24 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types=1);
-
-namespace gordonmcvey\WarpCore\test\unit\routing;
+namespace gordonmcvey\WarpCore\routing;
 
 use gordonmcvey\httpsupport\enum\Verbs;
-use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
-use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\TestCase;
 
-class SingleControllerStrategyTest extends TestCase
+final readonly class RouteSpec
 {
-    #[Test]
-    public function itReturnsValidRoutes(): void
-    {
-        $strategy = new SingleControllerStrategy("RoutedController", Verbs::GET);
+    /**
+     * @var array<Verbs>
+     */
+    public array $verbs;
 
-        $this->assertSame("RoutedController", $strategy->route("/foo"));
-        $this->assertSame("RoutedController", $strategy->route("/foo/bar"));
-        $this->assertSame("RoutedController", $strategy->route("/foo/bar/baz"));
+    public function __construct(public string $controllerClass, Verbs ...$verbs)
+    {
+        $this->verbs = $verbs;
     }
 }

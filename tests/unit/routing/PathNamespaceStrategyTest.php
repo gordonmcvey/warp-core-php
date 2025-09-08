@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\test\unit\routing;
 
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\WarpCore\routing\PathNamespaceStrategy;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -31,7 +32,7 @@ class PathNamespaceStrategyTest extends TestCase
     #[DataProvider("providePaths")]
     public function itReturnsValidRoutes(string $namespace, string $path, string $expectation): void
     {
-        $strategy = new PathNamespaceStrategy($namespace);
+        $strategy = new PathNamespaceStrategy($namespace, Verbs::GET);
 
         $this->assertSame($expectation, $strategy->route($path));
     }
