@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\examples\middleware;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
@@ -36,10 +37,12 @@ use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
  * Example using custom bootstrap with middleware
  */
 
-// Includes or Auto-loader
 define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
+
+// This is not necessary in an actual application
+$_SERVER["REQUEST_METHOD"] = "GET";
 
 // Demo
 (new FrontController(
@@ -54,7 +57,7 @@ require_once BASE_PATH . '/vendor/autoload.php';
     ->addMiddleware(new Profiler())
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new SingleControllerStrategy(Hello::class));
+            $router = new Router(new SingleControllerStrategy(Hello::class, Verbs::GET));
             /** @var RequestHandlerInterface&MiddlewareProviderInterface $controller */
             $controller = new ($router->route($request))();
 
