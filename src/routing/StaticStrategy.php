@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\routing;
 
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 
 /**
@@ -34,15 +35,26 @@ use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 class StaticStrategy implements RoutingStrategyInterface
 {
     /**
+     * @var array<Verbs>
+     */
+    private readonly array $verbs;
+
+    /**
      * @param array<string, string> $routes
      */
-    public function __construct(private array $routes = [])
+    public function __construct(private array $routes, Verbs ...$verbs)
     {
+        $this->verbs = $verbs;
     }
 
     public function route(string $path): ?string
     {
         return $this->routes[$path] ?? null;
+    }
+
+    public function forVerbs(): array
+    {
+        return $this->verbs;
     }
 
     public function addRoute(string $route, string $controllerClass): self

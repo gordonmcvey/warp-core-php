@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\test\unit\routing;
 
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class SingleControllerStrategyTest extends TestCase
     #[Test]
     public function itReturnsValidRoutes(): void
     {
-        $strategy = new SingleControllerStrategy("RoutedController");
+        $strategy = new SingleControllerStrategy("RoutedController", Verbs::GET);
 
         $this->assertSame("RoutedController", $strategy->route("/foo"));
         $this->assertSame("RoutedController", $strategy->route("/foo/bar"));
