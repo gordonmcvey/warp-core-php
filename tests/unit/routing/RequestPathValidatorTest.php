@@ -81,12 +81,12 @@ class RequestPathValidatorTest extends TestCase
 
     #[Test]
     #[DataProvider("provideInvalidPaths")]
-    public function itThrowsForInvalidInputs(string $path, int $code): void
+    public function itThrowsForInvalidInputs(string $path): void
     {
         $router = new RequestPathValidator();
 
         $this->expectException(Routing::class);
-        $this->expectExceptionCode($code);
+        $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
 
         $router->getPath($path);
     }
@@ -94,44 +94,36 @@ class RequestPathValidatorTest extends TestCase
     /**
      * @return iterable<string, array{
      *     path: string,
-     *     code: int,
      * }>
      */
     public static function provideInvalidPaths(): iterable
     {
         yield "Invalid characters in GET param" => [
             "path" => "/foo/bar=baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Repeating slash" => [
             "path" => "/foo/bar//baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "repeating hyphen" => [
             "path" => "/foo/bar--baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Repeating underscore" => [
             "path" => "/foo/bar__baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Hyphen underscore sequence" => [
             "path" => "/foo/bar-_baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Underscore hyphen sequence" => [
             "path" => "/foo/bar_-baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
 
         yield "Empty path" => [
             "path" => "",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
         ];
     }
 }
