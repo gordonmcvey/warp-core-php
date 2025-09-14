@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2018 Venditan Limited
+ * Copyright © 2018 Venditan Limited, 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,6 @@ use Exception;
 
 /**
  * AccessDenied Exception
- *
- * @author Kamba Abudu <kamba@venditan.com>
  */
 class AccessDenied extends Exception
 {
