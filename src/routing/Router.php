@@ -20,9 +20,9 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\routing;
 
-use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
-use gordonmcvey\WarpCore\exception\Routing;
+use gordonmcvey\WarpCore\exception\routing\InvalidPath;
+use gordonmcvey\WarpCore\exception\routing\MethodNotAllowed;
 use gordonmcvey\WarpCore\exception\routing\NoRouteToController;
 use gordonmcvey\WarpCore\interface\routing\RouterInterface;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
@@ -54,7 +54,9 @@ class Router implements RouterInterface
     }
 
     /**
-     * @throws Routing if the request cannot be resolved to a controller class
+     * @throws InvalidPath if the URI path cannot be parsed
+     * @throws NoRouteToController If no strategies match the request path
+     * @throws MethodNotAllowed if the request cannot be resolved to a controller class
      */
     public function route(RequestInterface $request): string
     {
@@ -69,15 +71,14 @@ class Router implements RouterInterface
             }
         }
 
-        throw new Routing(
+        throw new MethodNotAllowed(
             sprintf("No suitable controllers found for URI path %s that support method '%s'", $uri, $verb->value),
-            ClientErrorCodes::METHOD_NOT_ALLOWED->value,
         );
     }
 
     /**
      * @return array<RouteSpec>
-     * @throws Routing If no strategies match the request path
+     * @throws NoRouteToController If no strategies match the request path
      */
     private function getRoutesForPath(string $uri, string $path): array
     {
