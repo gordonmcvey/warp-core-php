@@ -20,11 +20,11 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\Exceptions;
 
-use Exception;
+use RuntimeException;
 
 /**
  * Auth Exception
  */
-class Auth extends Exception
+class Auth extends RuntimeException
 {
 }

@@ -20,11 +20,11 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\Exceptions;
 
-use Exception;
+use RuntimeException;
 
 /**
  * Routing Exception
  */
-class Routing extends Exception
+class Routing extends RuntimeException
 {
 }
