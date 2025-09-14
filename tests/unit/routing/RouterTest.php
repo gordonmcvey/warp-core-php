@@ -24,6 +24,7 @@ use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\WarpCore\exception\Routing;
+use gordonmcvey\WarpCore\exception\routing\InvalidPath;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
@@ -154,12 +155,12 @@ class RouterTest extends TestCase
             ->expects($this->any())
             ->method("getPath")
             ->with("https://www.example.com/foo/bar")
-            ->willThrowException(new Routing(code: ClientErrorCodes::BAD_REQUEST->value))
+            ->willThrowException(new InvalidPath())
         ;
 
         $router = new Router($pathValidator, $strategy);
 
-        $this->expectException(Routing::class);
+        $this->expectException(InvalidPath::class);
         $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
 
         $router->route($request);
