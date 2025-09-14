@@ -25,6 +25,7 @@ use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\WarpCore\exception\Routing;
 use gordonmcvey\WarpCore\exception\routing\InvalidPath;
+use gordonmcvey\WarpCore\exception\routing\NoRouteToController;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
@@ -185,7 +186,7 @@ class RouterTest extends TestCase
 
         $router = new Router($pathValidator, $strategy);
 
-        $this->expectException(Routing::class);
+        $this->expectException(NoRouteToController::class);
         $this->expectExceptionCode(ClientErrorCodes::NOT_FOUND->value);
 
         $router->route($request);

@@ -23,6 +23,7 @@ namespace gordonmcvey\WarpCore\routing;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\WarpCore\exception\Routing;
+use gordonmcvey\WarpCore\exception\routing\NoRouteToController;
 use gordonmcvey\WarpCore\interface\routing\RouterInterface;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 
@@ -92,9 +93,8 @@ class Router implements RouterInterface
         }
 
         if (empty($this->routeSpecCache[$path])) {
-            throw new Routing(
+            throw new NoRouteToController(
                 sprintf("No suitable controller found for URI path '%s' (for any method)", $uri),
-                ClientErrorCodes::NOT_FOUND->value,
             );
         }
 
