@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\routing;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\Routing;
 
 class RequestPathValidator
 {

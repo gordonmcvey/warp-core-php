@@ -18,13 +18,13 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore\Exceptions;
+namespace gordonmcvey\WarpCore\exception;
 
 use RuntimeException;
 
 /**
- * Auth Exception
+ * Routing Exception
  */
-class Auth extends RuntimeException
+class Routing extends RuntimeException
 {
 }

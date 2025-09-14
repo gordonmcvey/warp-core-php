@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\controller;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\Routing;
 use gordonmcvey\WarpCore\interface\controller\ControllerFactoryInterface;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 

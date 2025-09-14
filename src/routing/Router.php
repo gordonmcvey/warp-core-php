@@ -22,7 +22,7 @@ namespace gordonmcvey\WarpCore\routing;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\Routing;
 use gordonmcvey\WarpCore\interface\routing\RouterInterface;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 
