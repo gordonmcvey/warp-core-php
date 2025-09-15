@@ -26,6 +26,7 @@ use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
 use gordonmcvey\WarpCore\exception\AccessDenied;
 use gordonmcvey\WarpCore\exception\Auth;
+use gordonmcvey\WarpCore\exception\controller\BootstrapFailure;
 use gordonmcvey\WarpCore\exception\routing\MethodNotAllowed;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
@@ -288,7 +289,7 @@ class FrontControllerTest extends TestCase
 
         $mockErrorHandler->expects($this->once())
             ->method("handle")
-            ->with($this->isInstanceOf(\Exception::class))
+            ->with($this->isInstanceOf(BootstrapFailure::class))
             ->willReturn($mockResponse)
         ;
 
