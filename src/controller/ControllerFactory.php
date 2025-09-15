@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\controller;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\WarpCore\exception\controller\ControllerNotFound;
 use gordonmcvey\WarpCore\exception\Routing;
 use gordonmcvey\WarpCore\interface\controller\ControllerFactoryInterface;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
@@ -38,6 +39,7 @@ class ControllerFactory implements ControllerFactoryInterface
     private array $arguments = [];
 
     /**
+     * @throws ControllerNotFound
      * @throws Routing
      */
     public function make(string $path): RequestHandlerInterface
@@ -54,14 +56,13 @@ class ControllerFactory implements ControllerFactoryInterface
     }
 
     /**
-     * @throws Routing
+     * @throws ControllerNotFound
      */
     protected function checkControllerExists(string $path): string
     {
         if (!class_exists($path)) {
-            throw new Routing(
+            throw new ControllerNotFound(
                 sprintf("No controller found for URI path %s", $path),
-                ClientErrorCodes::NOT_FOUND->value,
             );
         }
 
