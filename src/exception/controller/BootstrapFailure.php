@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2018 Venditan Limited, 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,19 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore\Exceptions;
+namespace gordonmcvey\WarpCore\exception\controller;
 
-use Exception;
+use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
+use gordonmcvey\WarpCore\exception\Controller;
+use Throwable;
 
-/**
- * AccessDenied Exception
- */
-class AccessDenied extends Exception
+class BootstrapFailure extends Controller
 {
+    public function __construct(
+        string $message = "",
+        int $code = ServerErrorCodes::INTERNAL_SERVER_ERROR->value,
+        Throwable $previous = null,
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }

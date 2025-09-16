@@ -22,7 +22,9 @@ namespace gordonmcvey\WarpCore\test\unit\controller;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\WarpCore\controller\ControllerFactory;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\controller\ControllerNotFound;
+use gordonmcvey\WarpCore\exception\controller\NotAController;
+use gordonmcvey\WarpCore\exception\Routing;
 use gordonmcvey\WarpCore\test\Controllers\FactoryInstantiated;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -70,7 +72,7 @@ class ControllerFactoryTest extends TestCase
     {
         $factory = new ControllerFactory();
 
-        $this->expectException(Routing::class);
+        $this->expectException(NotAController::class);
         $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
         $factory->make(stdClass::class);
     }
@@ -80,7 +82,7 @@ class ControllerFactoryTest extends TestCase
     {
         $factory = new ControllerFactory();
 
-        $this->expectException(Routing::class);
+        $this->expectException(ControllerNotFound::class);
         $this->expectExceptionCode(ClientErrorCodes::NOT_FOUND->value);
         $factory->make(__NAMESPACE__ . "NonExistentClass");
     }

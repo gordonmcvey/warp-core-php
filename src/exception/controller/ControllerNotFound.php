@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2015 Docnet, 2025 Gordon McVey
+ * Copyright © 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,19 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore\Exceptions;
+namespace gordonmcvey\WarpCore\exception\controller;
 
-use Exception;
+use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\WarpCore\exception\Controller;
+use Throwable;
 
-/**
- * Auth Exception
- */
-class Auth extends Exception
+class ControllerNotFound extends Controller
 {
+    public function __construct(
+        string $message = "",
+        int $code = ClientErrorCodes::NOT_FOUND->value,
+        Throwable $previous = null,
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }

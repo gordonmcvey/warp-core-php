@@ -21,7 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\test\unit\routing;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\routing\InvalidPath;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
 class RequestPathValidatorTest extends TestCase
 {
     /**
-     * @throws Routing
+     * @throws InvalidPath
      */
     #[Test]
     #[DataProvider("provideValidUris")]
@@ -80,50 +80,54 @@ class RequestPathValidatorTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider("provideInvalidPaths")]
-    public function itThrowsForInvalidInputs(string $path): void
+    #[DataProvider("provideInvalidUris")]
+    public function itThrowsForInvalidInputs(string $uri): void
     {
         $router = new RequestPathValidator();
 
-        $this->expectException(Routing::class);
+        $this->expectException(InvalidPath::class);
         $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
 
-        $router->getPath($path);
+        $router->getPath($uri);
     }
 
     /**
      * @return iterable<string, array{
-     *     path: string,
+     *     uri: string,
      * }>
      */
-    public static function provideInvalidPaths(): iterable
+    public static function provideInvalidUris(): iterable
     {
+        yield "Unparsable URI" => [
+            "uri" => "http:///example.com/",
+        ];
+
         yield "Invalid characters in GET param" => [
-            "path" => "/foo/bar=baz/quux",
+            "uri" => "https://www.example.com/foo/bar=baz/quux",
         ];
 
         yield "Repeating slash" => [
-            "path" => "/foo/bar//baz/quux",
+            "uri" => "https://www.example.com/foo/bar//baz/quux",
         ];
 
         yield "repeating hyphen" => [
-            "path" => "/foo/bar--baz/quux",
+            "uri" => "https://www.example.com/foo/bar--baz/quux",
         ];
 
         yield "Repeating underscore" => [
-            "path" => "/foo/bar__baz/quux",
+            "uri" => "https://www.example.com/foo/bar__baz/quux",
         ];
 
         yield "Hyphen underscore sequence" => [
-            "path" => "/foo/bar-_baz/quux",
+            "uri" => "https://www.example.com/foo/bar-_baz/quux",
         ];
 
         yield "Underscore hyphen sequence" => [
-            "path" => "/foo/bar_-baz/quux",
+            "uri" => "https://www.example.com/foo/bar_-baz/quux",
         ];
 
         yield "Empty path" => [
-            "path" => "",
+            "uri" => "",
         ];
     }
 }

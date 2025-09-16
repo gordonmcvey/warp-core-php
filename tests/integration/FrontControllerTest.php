@@ -24,9 +24,10 @@ use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
-use gordonmcvey\WarpCore\Exceptions\AccessDenied;
-use gordonmcvey\WarpCore\Exceptions\Auth;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\AccessDenied;
+use gordonmcvey\WarpCore\exception\Auth;
+use gordonmcvey\WarpCore\exception\controller\BootstrapFailure;
+use gordonmcvey\WarpCore\exception\routing\MethodNotAllowed;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
@@ -288,7 +289,7 @@ class FrontControllerTest extends TestCase
 
         $mockErrorHandler->expects($this->once())
             ->method("handle")
-            ->with($this->isInstanceOf(\Exception::class))
+            ->with($this->isInstanceOf(BootstrapFailure::class))
             ->willReturn($mockResponse)
         ;
 
@@ -315,12 +316,12 @@ class FrontControllerTest extends TestCase
 
         $mockErrorHandler->expects($this->once())
             ->method("handle")
-            ->with($this->isInstanceOf(Routing::class))
+            ->with($this->isInstanceOf(MethodNotAllowed::class))
             ->willReturn($mockResponse)
         ;
 
         $frontController = new FrontController(new CallStackFactory(), $mockErrorHandler, $mockSender);
-        $frontController->bootstrap(fn() => throw new Routing(), $mockRequest);
+        $frontController->bootstrap(fn() => throw new MethodNotAllowed(), $mockRequest);
     }
 
     /**

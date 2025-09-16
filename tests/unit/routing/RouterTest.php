@@ -23,7 +23,10 @@ namespace gordonmcvey\WarpCore\test\unit\routing;
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\Routing;
+use gordonmcvey\WarpCore\exception\routing\InvalidPath;
+use gordonmcvey\WarpCore\exception\routing\MethodNotAllowed;
+use gordonmcvey\WarpCore\exception\routing\NoRouteToController;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
@@ -154,12 +157,12 @@ class RouterTest extends TestCase
             ->expects($this->any())
             ->method("getPath")
             ->with("https://www.example.com/foo/bar")
-            ->willThrowException(new Routing(code: ClientErrorCodes::BAD_REQUEST->value))
+            ->willThrowException(new InvalidPath())
         ;
 
         $router = new Router($pathValidator, $strategy);
 
-        $this->expectException(Routing::class);
+        $this->expectException(InvalidPath::class);
         $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
 
         $router->route($request);
@@ -184,7 +187,7 @@ class RouterTest extends TestCase
 
         $router = new Router($pathValidator, $strategy);
 
-        $this->expectException(Routing::class);
+        $this->expectException(NoRouteToController::class);
         $this->expectExceptionCode(ClientErrorCodes::NOT_FOUND->value);
 
         $router->route($request);
@@ -217,7 +220,7 @@ class RouterTest extends TestCase
 
         $router = new Router($pathValidator, $getStrategy, $postStrategy);
 
-        $this->expectException(Routing::class);
+        $this->expectException(MethodNotAllowed::class);
         $this->expectExceptionCode(ClientErrorCodes::METHOD_NOT_ALLOWED->value);
 
         $router->route($putRequest);

@@ -20,8 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\routing;
 
-use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\routing\InvalidPath;
 
 class RequestPathValidator
 {
@@ -40,7 +39,7 @@ class RequestPathValidator
     private const string ILLEGAL_CHARACTER_SEQUENCE = "/[_-]{2,}/";
 
     /**
-     * @throws Routing
+     * @throws InvalidPath
      */
     public function getPath(string $url): string
     {
@@ -53,15 +52,14 @@ class RequestPathValidator
     /**
      * Extract the path portion of the given URI
      *
-     * @throws Routing
+     * @throws InvalidPath
      */
     private function extractPath(string $uri): string
     {
         $parsed = parse_url($uri);
         if (!$parsed) {
-            throw new Routing(
+            throw new InvalidPath(
                 sprintf("Unable to parse URI path '%s'", $uri),
-                ClientErrorCodes::BAD_REQUEST->value
             );
         }
 
@@ -74,7 +72,7 @@ class RequestPathValidator
      * As the path is user-supplied, it can't be trusted, so we'll check it for anything that looks nefarious and bail
      * out if anything looks like it may be problematic
      *
-     * @throws Routing
+     * @throws InvalidPath
      */
     private function validatePath(string $path): void
     {
@@ -86,12 +84,11 @@ class RequestPathValidator
             !preg_match(self::SAFE_PATH, $path)
             || preg_match(self::ILLEGAL_CHARACTER_SEQUENCE, $path)
         ) {
-            throw new Routing(
+            throw new InvalidPath(
                 sprintf(
                     "Invalid characters or sequences in URI path %s",
                     $path,
                 ),
-                ClientErrorCodes::BAD_REQUEST->value,
             );
         }
     }
