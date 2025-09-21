@@ -29,6 +29,7 @@ use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 use gordonmcvey\WarpCore\ShutdownHandler;
@@ -66,7 +67,7 @@ trigger_error("whoops", E_USER_ERROR);
 (new FrontController(new CallStackFactory(), $errorHandler, $responseSender))
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new SingleControllerStrategy(Hello::class, Verbs::GET));
+            $router = new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET));
 
             /** @var RequestHandlerInterface $controller */
             $controller = new ($router->route($request));

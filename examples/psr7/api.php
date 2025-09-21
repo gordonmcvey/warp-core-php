@@ -28,6 +28,7 @@ use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -49,7 +50,7 @@ require_once BASE_PATH . '/vendor/autoload.php';
 ))->addMiddleware(new RequestLogger())
     ->bootstrap(
         new Bootstrap(
-            new Router(new SingleControllerStrategy(Hello::class, Verbs::GET)),
+            new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
             new ControllerFactory(),
         ),
         new ServerRequestAdaptor(

@@ -30,6 +30,7 @@ use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 
@@ -57,7 +58,7 @@ $_SERVER["REQUEST_METHOD"] = "GET";
     ->addMiddleware(new Profiler())
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new SingleControllerStrategy(Hello::class, Verbs::GET));
+            $router = new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET));
             /** @var RequestHandlerInterface&MiddlewareProviderInterface $controller */
             $controller = new ($router->route($request))();
 
