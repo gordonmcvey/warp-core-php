@@ -29,7 +29,7 @@ class InvalidPath extends Routing
     public function __construct(
         string $message = "",
         int $code = ClientErrorCodes::BAD_REQUEST->value,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct($message, $code, $previous);
     }

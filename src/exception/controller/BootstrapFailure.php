@@ -29,7 +29,7 @@ class BootstrapFailure extends Controller
     public function __construct(
         string $message = "",
         int $code = ServerErrorCodes::INTERNAL_SERVER_ERROR->value,
-        Throwable $previous = null,
+        ?Throwable $previous = null,
     ) {
         parent::__construct($message, $code, $previous);
     }
