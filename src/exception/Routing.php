@@ -18,33 +18,13 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore;
+namespace gordonmcvey\WarpCore\exception;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use RuntimeException;
 
 /**
- * HasLogger Trait
- *
- * @deprecated Replace with ?-> notation
+ * Routing Exception
  */
-trait HasLogger
+class Routing extends RuntimeException
 {
-    protected ?LoggerInterface $logger = null;
-
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Gets a logger.
-     */
-    protected function getLogger(): ?LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = new NullLogger();
-        }
-        return $this->logger;
-    }
 }

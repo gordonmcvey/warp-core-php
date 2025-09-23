@@ -19,6 +19,7 @@
 namespace gordonmcvey\WarpCore\examples\bootstrap;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\WarpCore\Bootstrap;
@@ -27,6 +28,7 @@ use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 
@@ -34,20 +36,21 @@ use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
  * Example using the library-supplied Bootstrap class
  */
 
-// Includes or Auto-loader
 define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
 
-// Demo
+// This is not necessary in an actual application
+$_SERVER["REQUEST_METHOD"] = "GET";
 
+// Demo
 (new FrontController(
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender(),
 ))->bootstrap(
     new Bootstrap(
-        new Router(new SingleControllerStrategy(Hello::class)),
+        new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
         new ControllerFactory(),
     ),
     Request::fromSuperGlobals(),

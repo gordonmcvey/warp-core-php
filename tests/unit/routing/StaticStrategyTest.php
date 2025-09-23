@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\test\unit\routing;
 
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\WarpCore\routing\StaticStrategy;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +34,7 @@ class StaticStrategyTest extends TestCase
             "/foo"         => "FooController",
             "/foo/bar"     => "FooBarController",
             "/foo/bar/baz" => "FooBarBazController",
-        ]);
+        ], Verbs::GET);
 
         $this->assertSame("FooController", $strategy->route("/foo"));
         $this->assertSame("FooBarController", $strategy->route("/foo/bar"));
@@ -44,7 +45,7 @@ class StaticStrategyTest extends TestCase
     #[Test]
     public function itAddsRoutes(): void
     {
-        $strategy = new StaticStrategy([]);
+        $strategy = new StaticStrategy([], Verbs::GET);
 
         $this->assertNull($strategy->route("/foo"));
         $strategy->addRoute("/foo", "FooController");

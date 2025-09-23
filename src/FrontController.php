@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright 2015 Docnet
+ * Copyright © 2015 Docnet, 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore;
 
 use Exception;
-use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
 use gordonmcvey\httpsupport\response\Response;
+use gordonmcvey\WarpCore\exception\controller\BootstrapFailure;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
 use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
@@ -74,8 +74,7 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
     ): RequestHandlerInterface {
         $controller = is_callable($controllerSource) ? $controllerSource($request) : $controllerSource;
         if (!$controller instanceof RequestHandlerInterface) {
-            // @todo Replace with a semantic exception
-            throw new Exception('Unable to bootstrap', ServerErrorCodes::INTERNAL_SERVER_ERROR->value);
+            throw new BootstrapFailure("Unable to bootstrap");
         }
 
         return $controller;

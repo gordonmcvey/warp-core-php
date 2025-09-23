@@ -19,6 +19,7 @@
 namespace gordonmcvey\WarpCore\examples\psr7;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\request\psr7\ServerRequestAdaptor;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\WarpCore\Bootstrap;
@@ -27,6 +28,7 @@ use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 use GuzzleHttp\Psr7\ServerRequest;
@@ -36,7 +38,6 @@ use GuzzleHttp\Psr7\Utils;
  * Example for processing a PSR-7 compatible request
  */
 
-// Includes or Auto-loader
 define('BASE_PATH', dirname(__DIR__, 2));
 
 require_once BASE_PATH . '/vendor/autoload.php';
@@ -49,12 +50,12 @@ require_once BASE_PATH . '/vendor/autoload.php';
 ))->addMiddleware(new RequestLogger())
     ->bootstrap(
         new Bootstrap(
-            new Router(new SingleControllerStrategy(Hello::class)),
+            new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
             new ControllerFactory(),
         ),
         new ServerRequestAdaptor(
             new ServerRequest(
-                "GET",
+                Verbs::GET->value,
                 "https://example.com/",
                 [],
                 Utils::streamFor("This is the request!"),

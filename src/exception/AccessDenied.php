@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2015 Docnet, 2025 Gordon McVey
+ * Copyright © 2018 Venditan Limited, 2025 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,33 +18,13 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore;
+namespace gordonmcvey\WarpCore\exception;
 
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use RuntimeException;
 
 /**
- * HasLogger Trait
- *
- * @deprecated Replace with ?-> notation
+ * AccessDenied Exception
  */
-trait HasLogger
+class AccessDenied extends RuntimeException
 {
-    protected ?LoggerInterface $logger = null;
-
-    public function setLogger(LoggerInterface $logger): void
-    {
-        $this->logger = $logger;
-    }
-
-    /**
-     * Gets a logger.
-     */
-    protected function getLogger(): ?LoggerInterface
-    {
-        if (null === $this->logger) {
-            $this->logger = new NullLogger();
-        }
-        return $this->logger;
-    }
 }

@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\interface\routing;
 
+use gordonmcvey\httpsupport\enum\Verbs;
+
 /**
  * Routing strategy interface
  *
@@ -32,4 +34,9 @@ interface RoutingStrategyInterface
      * handler cannot be found
      */
     public function route(string $path): ?string;
+
+    /**
+     * @return array<Verbs>
+     */
+    public function forVerbs(): array;
 }

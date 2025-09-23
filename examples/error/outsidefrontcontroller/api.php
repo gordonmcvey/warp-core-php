@@ -19,6 +19,7 @@
 namespace gordonmcvey\WarpCore\examples\error\outsidefrontcontroller;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
@@ -28,6 +29,7 @@ use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
 use gordonmcvey\WarpCore\ShutdownHandler;
@@ -38,7 +40,6 @@ use gordonmcvey\WarpCore\ShutdownHandler;
  * doesn't occur inside the front controller's try/catch dispatch block.
  */
 
-// Includes or Auto-loader
 define('BASE_PATH', dirname(__DIR__, 3));
 
 require_once BASE_PATH . '/vendor/autoload.php';
@@ -46,6 +47,9 @@ require_once BASE_PATH . '/vendor/autoload.php';
 // For live you don't want any error output.  You might want to use different values here for local development/testing
 error_reporting(0);
 ini_set('display_errors', false);
+
+// This is not necessary in an actual application
+$_SERVER["REQUEST_METHOD"] = "GET";
 
 // Demo
 set_error_handler(new errorToException(), E_ERROR ^ E_USER_ERROR ^ E_COMPILE_ERROR);
@@ -63,7 +67,7 @@ trigger_error("whoops", E_USER_ERROR);
 (new FrontController(new CallStackFactory(), $errorHandler, $responseSender))
     ->bootstrap(
         function (RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new SingleControllerStrategy(Hello::class));
+            $router = new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET));
 
             /** @var RequestHandlerInterface $controller */
             $controller = new ($router->route($request));

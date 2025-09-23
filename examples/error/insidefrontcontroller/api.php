@@ -32,10 +32,12 @@ use stdClass;
  * to handle and are dealt with in the outsidefrontcontroller example.
  */
 
-// Includes or Auto-loader
 define('BASE_PATH', dirname(__DIR__, 3));
 
 require_once BASE_PATH . '/vendor/autoload.php';
+
+// This is not necessary in an actual application
+$_SERVER["REQUEST_METHOD"] = "GET";
 
 // Demo
 (new FrontController(

@@ -64,7 +64,10 @@ require_once '/vendor/autoload.php';
     new ResponseSender(),
 ))->bootstrap(
     new Bootstrap(
-        new Router(new SingleControllerStrategy(Hello::class)),
+        new Router(
+            new RequestPathValidator(), 
+            new SingleControllerStrategy(Hello::class),
+        ),
         new ControllerFactory(),
     ),
     Request::fromSuperGlobals(),

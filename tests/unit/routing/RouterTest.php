@@ -21,9 +21,14 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\test\unit\routing;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
-use gordonmcvey\WarpCore\Exceptions\Routing;
+use gordonmcvey\WarpCore\exception\Routing;
+use gordonmcvey\WarpCore\exception\routing\InvalidPath;
+use gordonmcvey\WarpCore\exception\routing\MethodNotAllowed;
+use gordonmcvey\WarpCore\exception\routing\NoRouteToController;
 use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -38,26 +43,33 @@ class RouterTest extends TestCase
      */
     #[Test]
     #[DataProvider("provideValidPaths")]
-    public function itRoutesForValidPaths(string $path, string $controller): void
+    public function itRoutesForValidPaths(string $uri, string $path, string $controller): void
     {
         $strategy = $this->createMock(RoutingStrategyInterface::class);
         $request = $this->createMock(RequestInterface::class);
+        $pathValidator = $this->createMock(RequestPathValidator::class);
 
-        $request->expects($this->once())->method("uri")->willReturn($path);
+        $request->expects($this->once())->method("uri")->willReturn($uri);
+        $request->expects($this->once())->method("verb")->willReturn(Verbs::GET);
+
+        $pathValidator->expects($this->once())->method("getPath")->with($uri)->willReturn($path);
+
         $strategy
             ->expects($this->once())
             ->method("route")
             ->with($path)
             ->willReturn($controller)
         ;
+        $strategy->expects($this->once())->method("forVerbs")->willReturn([Verbs::GET]);
 
-        $router = new Router($strategy);
+        $router = new Router($pathValidator, $strategy);
 
         $this->assertSame($controller, $router->route($request));
     }
 
     /**
      * @return iterable<string, array{
+     *     uri: string,
      *     path: string,
      *     controller: string,
      * }>
@@ -65,26 +77,31 @@ class RouterTest extends TestCase
     public static function provideValidPaths(): iterable
     {
         yield "Typical routing" => [
+            "uri"        => "https://www.example.com/foo/bar/baz/quux",
             "path"       => "/foo/bar/baz/quux",
             "controller" => "RoutedController",
         ];
 
         yield "Routing with hyphens" => [
+            "uri"        => "https://www.example.com/foo-bar-baz-quux",
             "path"       => "/foo-bar-baz-quux",
             "controller" => "RoutedController",
         ];
 
         yield "Routing with underscores" => [
+            "uri"        => "https://www.example.com/foo_bar_baz_quux",
             "path"       => "/foo_bar_baz_quux",
             "controller" => "RoutedController",
         ];
 
         yield "Routing with hyphens and underscores" => [
+            "uri"        => "https://www.example.com/foo-bar_baz-quux",
             "path"       => "/foo-bar_baz-quux",
             "controller" => "RoutedController",
         ];
 
         yield "Root path" => [
+            "uri"        => "https://www.example.com/",
             "path"       => "/",
             "controller" => "RoutedController",
         ];
@@ -95,90 +112,60 @@ class RouterTest extends TestCase
      * @throws Routing
      */
     #[Test]
-    public function itStopsRoutingWhenItFindsAResult(): void
+    public function itRoutesToTheCorrectControllerForTheVerb(): void
     {
-        $strategy1 = $this->createMock(RoutingStrategyInterface::class);
-        $strategy2 = $this->createMock(RoutingStrategyInterface::class);
-        $request = $this->createMock(RequestInterface::class);
+        $requests = [];
+        $strategies = [];
 
-        $request->expects($this->once())->method("uri")->willReturn("/foo/bar");
-        $strategy1
-            ->expects($this->once())
-            ->method("route")
-            ->with("/foo/bar")
-            ->willReturn("RoutedController")
-        ;
+        foreach (Verbs::cases() as $verb) {
+            $newRequest = $this->createMock(RequestInterface::class);
+            $newStrategy = $this->createMock(RoutingStrategyInterface::class);
 
-        $strategy2->expects($this->never())->method("route");
+            $newRequest->expects($this->once())->method("uri")->willReturn("/");
+            $newRequest->expects($this->once())->method("verb")->willReturn($verb);
 
-        $router = new Router($strategy1, $strategy2);
+            $newStrategy->expects($this->any())->method("route")->with("/")->willReturn($verb->value);
+            $newStrategy->expects($this->any())->method("forVerbs")->willReturn([$verb]);
 
-        $this->assertSame("RoutedController", $router->route($request));
+            $requests[$verb->value] = $newRequest;
+            $strategies[$verb->value] = $newStrategy;
+        }
+
+        $pathValidator = $this->createMock(RequestPathValidator::class);
+        $pathValidator->expects($this->any())->method("getPath")->with("/")->willReturn("/");
+
+        $router = new Router($pathValidator, ...$strategies);
+
+        foreach ($requests as $expectedVerb => $request) {
+            $this->assertSame($expectedVerb, $router->route($request));
+        }
     }
 
     /**
      * @throws Exception
      */
     #[Test]
-    #[DataProvider("provideInvalidPaths")]
-    public function itThrowsBadRequestForInvalidPaths(string $path, int $code): void
+    public function itThrowsBadRequestForInvalidPaths(): void
     {
         $strategy = $this->createMock(RoutingStrategyInterface::class);
         $request = $this->createMock(RequestInterface::class);
+        $pathValidator = $this->createMock(RequestPathValidator::class);
 
-        $request->expects($this->atLeastOnce())->method("uri")->willReturn($path);
+        $request->expects($this->atLeastOnce())->method("uri")->willReturn("https://www.example.com/foo/bar");
         $strategy->expects($this->never())->method("route");
+        $pathValidator
+            ->expects($this->any())
+            ->method("getPath")
+            ->with("https://www.example.com/foo/bar")
+            ->willThrowException(new InvalidPath())
+        ;
 
-        $router = new Router($strategy);
+        $router = new Router($pathValidator, $strategy);
 
-        $this->expectException(Routing::class);
-        $this->expectExceptionCode($code);
+        $this->expectException(InvalidPath::class);
+        $this->expectExceptionCode(ClientErrorCodes::BAD_REQUEST->value);
 
         $router->route($request);
-    }
-
-    /**
-     * @return iterable<string, array{
-     *     path: string,
-     *     code: int,
-     * }>
-     */
-    public static function provideInvalidPaths(): iterable
-    {
-        yield "Invalid characters" => [
-            "path" => "/foo/bar=baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
-        ];
-
-        yield "Double-slash" => [
-            "path" => "/foo/bar//baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
-        ];
-
-        yield "repeating hyphen" => [
-            "path" => "/foo/bar--baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
-        ];
-
-        yield "Repeating underscore" => [
-            "path" => "/foo/bar__baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
-        ];
-
-        yield "Hyphen underscore sequence" => [
-            "path" => "/foo/bar-_baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
-        ];
-
-        yield "Underscore hyphen sequence" => [
-            "path" => "/foo/bar_-baz/quux",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
-        ];
-
-        yield "Empty path" => [
-            "path" => "",
-            "code" => ClientErrorCodes::BAD_REQUEST->value,
-        ];
     }
 
     /**
@@ -187,21 +174,55 @@ class RouterTest extends TestCase
     #[Test]
     public function itThrowsNotFoundForPathThatDoesntRoute(): void
     {
+        $url = "https://www.example.com/foo/bar/baz";
+        $path = "/foo/bar/baz";
+
         $strategy = $this->createMock(RoutingStrategyInterface::class);
         $request = $this->createMock(RequestInterface::class);
+        $pathValidator = $this->createMock(RequestPathValidator::class);
 
-        $request->expects($this->atLeastOnce())->method("uri")->willReturn("/foo/bar/baz");
-        $strategy->expects($this->once())
-            ->method("route")
-            ->with("/foo/bar/baz")
-            ->willReturn(null)
-        ;
+        $request->expects($this->atLeastOnce())->method("uri")->willReturn($url);
+        $pathValidator->expects($this->once())->method("getPath")->with($url)->willReturn($path);
+        $strategy->expects($this->once())->method("route")->with($path)->willReturn(null);
 
-        $router = new Router($strategy);
+        $router = new Router($pathValidator, $strategy);
 
-        $this->expectException(Routing::class);
+        $this->expectException(NoRouteToController::class);
         $this->expectExceptionCode(ClientErrorCodes::NOT_FOUND->value);
 
         $router->route($request);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function itThrowsMethodNotAllowedForMethodThatDoesntMatch(): void
+    {
+        $uri = "https://www.example.com/foo/bar/baz";
+        $path = "/foo/bar/baz";
+
+        $getStrategy = $this->createMock(RoutingStrategyInterface::class);
+        $postStrategy = $this->createMock(RoutingStrategyInterface::class);
+        $putRequest = $this->createMock(RequestInterface::class);
+        $pathValidator = $this->createMock(RequestPathValidator::class);
+
+        $putRequest->expects($this->any())->method("uri")->willReturn($uri);
+        $putRequest->expects($this->any())->method("verb")->willReturn(Verbs::PUT);
+
+        $pathValidator->expects($this->once())->method("getPath")->with($uri)->willReturn($path);
+
+        $getStrategy->expects($this->any())->method("route")->with($path)->willReturn("GetController");
+        $getStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::GET]);
+
+        $postStrategy->expects($this->any())->method("route")->with($path)->willReturn("PostController");
+        $postStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::POST]);
+
+        $router = new Router($pathValidator, $getStrategy, $postStrategy);
+
+        $this->expectException(MethodNotAllowed::class);
+        $this->expectExceptionCode(ClientErrorCodes::METHOD_NOT_ALLOWED->value);
+
+        $router->route($putRequest);
     }
 }
