@@ -1,7 +1,6 @@
 {
     "name": "gordonmcvey/warp-core-php",
     "type": "library",
-    "version": "3.0.0rc1",
     "description": "Small, fast and flexible microframework for building applications and APIs in PHP",
     "authors": [
         {
