@@ -33,6 +33,7 @@ use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
 use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 /**
@@ -41,7 +42,8 @@ use Throwable;
 class FrontController implements MiddlewareProviderInterface, LoggerAwareInterface
 {
     use MiddlewareProviderTrait;
-    use HasLogger;
+
+    private ?LoggerInterface $logger = null;
 
     public function __construct(
         private readonly CallStackFactory $callStackFactory,
@@ -59,10 +61,15 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
             $controller = $this->getController($controllerSource, $request);
             $response = $this->dispatch($controller, $request);
         } catch (Throwable $e) {
-            $this->getLogger()->error("[Core] [{$e->getCode()}] Error: {$e->getMessage()}");
+            $this->logger?->error("[Core] [{$e->getCode()}] Error: {$e->getMessage()}");
             $response = $this->errorHandler->handle($e);
         }
         $this->responseSender->send($response);
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 
     /**
