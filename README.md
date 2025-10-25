@@ -73,5 +73,10 @@ require_once '/vendor/autoload.php';
     Request::fromSuperGlobals(),
 );
 ```
+## Additional resources
 
 There are a variety of additional examples provided in the `examples/` directory.  A collection of skeleton apps has also been made available in the [Warp Core example apps](https://github.com/gordonmcvey/warp-core-example-app) repo
+
+An [SDK is available](https://github.com/gordonmcvey/warp-core-sdk) to allow you to develop plugins, routers, middleware, etc.  
+
+Documentation is available in [the Wiki](https://github.com/gordonmcvey/warp-core-php/wiki).  
