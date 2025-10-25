@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\WarpCore\routing;
+namespace gordonmcvey\WarpCore\routing\dto;
 
 use gordonmcvey\httpsupport\enum\Verbs;
 

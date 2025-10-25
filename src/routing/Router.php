@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\routing;
 
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
+use gordonmcvey\WarpCore\routing\dto\RouteSpec;
 use gordonmcvey\WarpCore\sdk\exception\routing\InvalidPath;
 use gordonmcvey\WarpCore\sdk\exception\routing\MethodNotAllowed;
 use gordonmcvey\WarpCore\sdk\exception\routing\NoRouteToController;
