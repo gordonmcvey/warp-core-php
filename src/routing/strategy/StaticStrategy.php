@@ -18,36 +18,48 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore\routing;
+namespace gordonmcvey\WarpCore\routing\strategy;
 
 use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
 
 /**
- * Single Controller Strategy
+ * Static routing strategy
  *
- * This basically routes any request to the same controller regardless of its value.  This can be handy for very simple
- * applications, or as a "last resort" strategy when all the usual routing approaches have failed to find a controller.
+ * This routing strategy maps a path to a controller via a simple static array.  If the path matches an array key then
+ * the controller name associated with that key is returned, otherwise the strategy returns null.
+ *
+ * This approach is limited to the paths you specify matches for, but is also potentially faster than more traditional
+ * strategies.
  */
-readonly class SingleControllerStrategy implements RoutingStrategyInterface
+class StaticStrategy implements RoutingStrategyInterface
 {
     /**
      * @var array<Verbs>
      */
-    private array $verbs;
+    private readonly array $verbs;
 
-    public function __construct(private string $controllerClass, Verbs ...$verbs)
+    /**
+     * @param array<string, string> $routes
+     */
+    public function __construct(private array $routes, Verbs ...$verbs)
     {
         $this->verbs = $verbs;
     }
 
     public function route(string $path): ?string
     {
-        return $this->controllerClass;
+        return $this->routes[$path] ?? null;
     }
 
     public function forVerbs(): array
     {
         return $this->verbs;
+    }
+
+    public function addRoute(string $route, string $controllerClass): self
+    {
+        $this->routes[$route] = $controllerClass;
+        return $this;
     }
 }
