@@ -32,7 +32,7 @@ use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
  * Router class
  *
  * The Router class is responsible for determining the correct request handler (controller) for a given request.  It
- * does this by applying routing strategies until a strategy finds the name of an approporiate class to handle the
+ * does this by applying routing strategies until a strategy finds the name of an appropriate class to handle the
  * request.  This can then be used by a factory to instantiate the actual request handler.
  */
 class Router implements RouterInterface
