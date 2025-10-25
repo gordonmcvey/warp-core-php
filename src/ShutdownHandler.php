@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection PhpExpressionResultUnusedInspection */
+
 /**
  * Copyright © 2025 Gordon McVey
  *
@@ -23,7 +25,7 @@ namespace gordonmcvey\WarpCore;
 use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
-use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\error\ErrorHandlerInterface;
 use Psr\Log\LoggerInterface;
 
 /**

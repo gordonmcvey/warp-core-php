@@ -22,9 +22,9 @@ namespace gordonmcvey\WarpCore\test\unit\controller;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
 use gordonmcvey\WarpCore\controller\ControllerFactory;
-use gordonmcvey\WarpCore\exception\controller\ControllerNotFound;
-use gordonmcvey\WarpCore\exception\controller\NotAController;
-use gordonmcvey\WarpCore\exception\Routing;
+use gordonmcvey\WarpCore\sdk\exception\controller\ControllerNotFound;
+use gordonmcvey\WarpCore\sdk\exception\controller\NotAController;
+use gordonmcvey\WarpCore\sdk\exception\Routing;
 use gordonmcvey\WarpCore\test\Controllers\FactoryInstantiated;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

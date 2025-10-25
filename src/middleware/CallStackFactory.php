@@ -20,8 +20,8 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\middleware;
 
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareProviderInterface;
 
 /**
  * Callstack Factory

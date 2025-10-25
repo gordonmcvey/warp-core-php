@@ -10,11 +10,11 @@ use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\request\payload\ArrayPayloadHandler;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\Response;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
 use gordonmcvey\WarpCore\middleware\CallStack;
 use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareProviderInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

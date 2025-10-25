@@ -8,9 +8,9 @@ use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\response\Response;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
 use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareProviderInterface;
 
 class ExampleController implements RequestHandlerInterface, MiddlewareProviderInterface
 {

@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\middleware;
 
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareInterface;
 
 /**
  * Standard MiddlewareProvider implementation

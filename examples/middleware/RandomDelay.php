@@ -6,8 +6,8 @@ namespace gordonmcvey\WarpCore\examples\middleware;
 
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareInterface;
 
 /**
  * Middleware to add a randomised delay into the request/response cycle of 0 .. 1 second

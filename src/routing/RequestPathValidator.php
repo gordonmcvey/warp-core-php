@@ -20,7 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\routing;
 
-use gordonmcvey\WarpCore\exception\routing\InvalidPath;
+use gordonmcvey\WarpCore\sdk\exception\routing\InvalidPath;
 
 class RequestPathValidator
 {

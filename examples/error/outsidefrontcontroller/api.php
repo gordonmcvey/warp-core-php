@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection ALL */
+
 /**
  * Copyright © 2015 Docnet, 2025 Gordon McVey
  *
@@ -27,11 +29,11 @@ use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\ErrorToException;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\SingleControllerStrategy;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\ShutdownHandler;
 
 /**

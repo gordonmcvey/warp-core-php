@@ -20,9 +20,9 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\test\unit\middleware;
 
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareProviderInterface;
 use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareProviderInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
