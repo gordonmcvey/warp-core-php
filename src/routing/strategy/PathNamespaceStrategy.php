@@ -44,10 +44,7 @@ use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
  */
 readonly class PathNamespaceStrategy implements RoutingStrategyInterface
 {
-    /**
-     * @var array<Verbs>
-     */
-    private array $verbs;
+    use ForVerbsTrait;
 
     /**
      * @param string $controllerNamespace The namespace controllers will be located under, eg vendor\project\controllers
@@ -72,10 +69,5 @@ readonly class PathNamespaceStrategy implements RoutingStrategyInterface
                 ))
             ),
         );
-    }
-
-    public function forVerbs(): array
-    {
-        return $this->verbs;
     }
 }

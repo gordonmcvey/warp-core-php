@@ -34,10 +34,7 @@ use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
  */
 class StaticStrategy implements RoutingStrategyInterface
 {
-    /**
-     * @var array<Verbs>
-     */
-    private readonly array $verbs;
+    use ForVerbsTrait;
 
     /**
      * @param array<string, string> $routes
@@ -50,11 +47,6 @@ class StaticStrategy implements RoutingStrategyInterface
     public function route(string $path): ?string
     {
         return $this->routes[$path] ?? null;
-    }
-
-    public function forVerbs(): array
-    {
-        return $this->verbs;
     }
 
     public function addRoute(string $route, string $controllerClass): self

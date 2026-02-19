@@ -31,10 +31,7 @@ use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
  */
 readonly class SingleControllerStrategy implements RoutingStrategyInterface
 {
-    /**
-     * @var array<Verbs>
-     */
-    private array $verbs;
+    use ForVerbsTrait;
 
     public function __construct(private string $controllerClass, Verbs ...$verbs)
     {
@@ -44,10 +41,5 @@ readonly class SingleControllerStrategy implements RoutingStrategyInterface
     public function route(string $path): ?string
     {
         return $this->controllerClass;
-    }
-
-    public function forVerbs(): array
-    {
-        return $this->verbs;
     }
 }
