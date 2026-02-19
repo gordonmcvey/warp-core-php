@@ -8,7 +8,7 @@ use ErrorException;
 use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
-use gordonmcvey\WarpCore\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\error\ErrorHandlerInterface;
 use gordonmcvey\WarpCore\ShutdownHandler;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;

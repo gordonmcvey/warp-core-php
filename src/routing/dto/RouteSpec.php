@@ -16,21 +16,19 @@
  * limitations under the License.
  */
 
-declare(strict_types=1);
+namespace gordonmcvey\WarpCore\routing\dto;
 
-namespace gordonmcvey\WarpCore\exception\routing;
+use gordonmcvey\httpsupport\enum\Verbs;
 
-use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\WarpCore\exception\Routing;
-use Throwable;
-
-class NoRouteToController extends Routing
+final readonly class RouteSpec
 {
-    public function __construct(
-        string $message = "",
-        int $code = ClientErrorCodes::NOT_FOUND->value,
-        ?Throwable $previous = null,
-    ) {
-        parent::__construct($message, $code, $previous);
+    /**
+     * @var array<Verbs>
+     */
+    public array $verbs;
+
+    public function __construct(public string $controllerClass, Verbs ...$verbs)
+    {
+        $this->verbs = $verbs;
     }
 }

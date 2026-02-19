@@ -24,7 +24,7 @@ use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
 use gordonmcvey\httpsupport\response\Response;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 
 /**
  * Example controller class

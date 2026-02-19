@@ -20,10 +20,10 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore\controller;
 
-use gordonmcvey\WarpCore\exception\controller\ControllerNotFound;
-use gordonmcvey\WarpCore\exception\controller\NotAController;
-use gordonmcvey\WarpCore\interface\controller\ControllerFactoryInterface;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\exception\controller\ControllerNotFound;
+use gordonmcvey\WarpCore\sdk\exception\controller\NotAController;
+use gordonmcvey\WarpCore\sdk\interface\controller\ControllerFactoryInterface;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 
 /**
  * Simple Controller factory

@@ -18,10 +18,10 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore\test\unit\routing;
+namespace gordonmcvey\WarpCore\test\unit\routing\strategy;
 
 use gordonmcvey\httpsupport\enum\Verbs;
-use gordonmcvey\WarpCore\routing\PathNamespaceStrategy;
+use gordonmcvey\WarpCore\routing\strategy\PathNamespaceStrategy;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

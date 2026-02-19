@@ -18,10 +18,10 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore\test\unit\routing;
+namespace gordonmcvey\WarpCore\test\unit\routing\strategy;
 
 use gordonmcvey\httpsupport\enum\Verbs;
-use gordonmcvey\WarpCore\routing\StaticStrategy;
+use gordonmcvey\WarpCore\routing\strategy\StaticStrategy;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 

@@ -22,8 +22,8 @@ namespace gordonmcvey\WarpCore\examples\psr7;
 
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareInterface;
 
 class RequestLogger implements MiddlewareInterface
 {

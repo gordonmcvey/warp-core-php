@@ -21,17 +21,18 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\routing;
 
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
-use gordonmcvey\WarpCore\exception\routing\InvalidPath;
-use gordonmcvey\WarpCore\exception\routing\MethodNotAllowed;
-use gordonmcvey\WarpCore\exception\routing\NoRouteToController;
-use gordonmcvey\WarpCore\interface\routing\RouterInterface;
-use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
+use gordonmcvey\WarpCore\routing\dto\RouteSpec;
+use gordonmcvey\WarpCore\sdk\exception\routing\InvalidPath;
+use gordonmcvey\WarpCore\sdk\exception\routing\MethodNotAllowed;
+use gordonmcvey\WarpCore\sdk\exception\routing\NoRouteToController;
+use gordonmcvey\WarpCore\sdk\interface\routing\RouterInterface;
+use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
 
 /**
  * Router class
  *
  * The Router class is responsible for determining the correct request handler (controller) for a given request.  It
- * does this by applying routing strategies until a strategy finds the name of an approporiate class to handle the
+ * does this by applying routing strategies until a strategy finds the name of an appropriate class to handle the
  * request.  This can then be used by a factory to instantiate the actual request handler.
  */
 class Router implements RouterInterface

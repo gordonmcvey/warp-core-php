@@ -21,8 +21,8 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\test\unit\routing;
 
 use gordonmcvey\httpsupport\enum\statuscodes\ClientErrorCodes;
-use gordonmcvey\WarpCore\exception\routing\InvalidPath;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
+use gordonmcvey\WarpCore\sdk\exception\routing\InvalidPath;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;

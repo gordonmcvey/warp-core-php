@@ -22,9 +22,9 @@ namespace gordonmcvey\WarpCore\test\unit\middleware;
 
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
-use gordonmcvey\WarpCore\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\interface\middleware\MiddlewareInterface;
 use gordonmcvey\WarpCore\middleware\Slot;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;

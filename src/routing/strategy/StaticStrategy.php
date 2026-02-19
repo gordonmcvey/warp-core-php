@@ -18,10 +18,10 @@
 
 declare(strict_types=1);
 
-namespace gordonmcvey\WarpCore\routing;
+namespace gordonmcvey\WarpCore\routing\strategy;
 
 use gordonmcvey\httpsupport\enum\Verbs;
-use gordonmcvey\WarpCore\interface\routing\RoutingStrategyInterface;
+use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
 
 /**
  * Static routing strategy

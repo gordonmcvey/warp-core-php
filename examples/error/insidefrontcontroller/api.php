@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection ALL */
+
 /**
  * Copyright © 2015 Docnet, 2025 Gordon McVey
  *
