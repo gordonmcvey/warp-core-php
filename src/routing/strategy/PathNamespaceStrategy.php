@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\routing\strategy;
 
 use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
 
 /**
@@ -54,9 +55,9 @@ readonly class PathNamespaceStrategy implements RoutingStrategyInterface
         $this->verbs = $verbs;
     }
 
-    public function route(string $path): ?string
+    public function route(string $path): ?Route
     {
-        return sprintf(
+        $controllerClass =  sprintf(
             "%s%s",
             $this->controllerNamespace,
             str_replace(
@@ -69,5 +70,7 @@ readonly class PathNamespaceStrategy implements RoutingStrategyInterface
                 ))
             ),
         );
+
+        return new Route($controllerClass);
     }
 }

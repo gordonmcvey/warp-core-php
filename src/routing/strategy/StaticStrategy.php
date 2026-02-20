@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\routing\strategy;
 
 use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
 
 /**
@@ -44,9 +45,9 @@ class StaticStrategy implements RoutingStrategyInterface
         $this->verbs = $verbs;
     }
 
-    public function route(string $path): ?string
+    public function route(string $path): ?Route
     {
-        return $this->routes[$path] ?? null;
+        return isset($this->routes[$path]) ? new Route($this->routes[$path]) : null;
     }
 
     public function addRoute(string $route, string $controllerClass): self

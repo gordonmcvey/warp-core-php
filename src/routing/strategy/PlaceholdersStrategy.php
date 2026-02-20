@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\routing\strategy;
 
 use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 use gordonmcvey\WarpCore\sdk\interface\routing\RoutingStrategyInterface;
 use ValueError;
 
@@ -50,8 +51,8 @@ readonly class PlaceholdersStrategy implements RoutingStrategyInterface
         ));
     }
 
-    public function route(string $path): ?string
+    public function route(string $path): ?Route
     {
-        return preg_match($this->pattern, $path) ? $this->controllerClass : null;
+        return preg_match($this->pattern, $path) ? new Route($this->controllerClass) : null;
     }
 }
