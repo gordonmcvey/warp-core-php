@@ -19,6 +19,7 @@
 namespace gordonmcvey\WarpCore\routing\dto;
 
 use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 
 final readonly class RouteSpec
 {
@@ -27,7 +28,7 @@ final readonly class RouteSpec
      */
     public array $verbs;
 
-    public function __construct(public string $controllerClass, Verbs ...$verbs)
+    public function __construct(public Route $route, Verbs ...$verbs)
     {
         $this->verbs = $verbs;
     }

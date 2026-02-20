@@ -68,7 +68,7 @@ class Router implements RouterInterface
 
         foreach ($routesForPath as $routeSpec) {
             if (in_array($verb, $routeSpec->verbs, true)) {
-                return $routeSpec->controllerClass;
+                return $routeSpec->route->controllerClass;
             }
         }
 
@@ -87,9 +87,12 @@ class Router implements RouterInterface
             $this->routeSpecCache[$path] = [];
 
             foreach ($this->routingStrategies as $strategy) {
-                $className = $strategy->route($path);
-                if (null !== $className) {
-                    $this->routeSpecCache[$path][] = new RouteSpec($className, ...$strategy->forVerbs());
+                $route = $strategy->route($path);
+                if (null !== $route) {
+                    $this->routeSpecCache[$path][] = new RouteSpec(
+                        $route,
+                        ...$strategy->forVerbs(),
+                    );
                 }
             }
         }
