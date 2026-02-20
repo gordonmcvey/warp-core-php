@@ -25,6 +25,7 @@ use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 use gordonmcvey\WarpCore\sdk\exception\Routing;
 use gordonmcvey\WarpCore\sdk\exception\routing\InvalidPath;
 use gordonmcvey\WarpCore\sdk\exception\routing\MethodNotAllowed;
@@ -58,7 +59,7 @@ class RouterTest extends TestCase
             ->expects($this->once())
             ->method("route")
             ->with($path)
-            ->willReturn($controller)
+            ->willReturn(new Route($controller))
         ;
         $strategy->expects($this->once())->method("forVerbs")->willReturn([Verbs::GET]);
 
@@ -124,7 +125,7 @@ class RouterTest extends TestCase
             $newRequest->expects($this->once())->method("uri")->willReturn("/");
             $newRequest->expects($this->once())->method("verb")->willReturn($verb);
 
-            $newStrategy->expects($this->any())->method("route")->with("/")->willReturn($verb->value);
+            $newStrategy->expects($this->any())->method("route")->with("/")->willReturn(new Route($verb->value));
             $newStrategy->expects($this->any())->method("forVerbs")->willReturn([$verb]);
 
             $requests[$verb->value] = $newRequest;
@@ -212,10 +213,10 @@ class RouterTest extends TestCase
 
         $pathValidator->expects($this->once())->method("getPath")->with($uri)->willReturn($path);
 
-        $getStrategy->expects($this->any())->method("route")->with($path)->willReturn("GetController");
+        $getStrategy->expects($this->any())->method("route")->with($path)->willReturn(new Route("GetController"));
         $getStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::GET]);
 
-        $postStrategy->expects($this->any())->method("route")->with($path)->willReturn("PostController");
+        $postStrategy->expects($this->any())->method("route")->with($path)->willReturn(new Route("PostController"));
         $postStrategy->expects($this->any())->method("forVerbs")->willReturn([Verbs::POST]);
 
         $router = new Router($pathValidator, $getStrategy, $postStrategy);

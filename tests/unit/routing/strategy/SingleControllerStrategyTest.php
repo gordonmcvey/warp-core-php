@@ -32,8 +32,8 @@ class SingleControllerStrategyTest extends TestCase
     {
         $strategy = new SingleControllerStrategy("RoutedController", Verbs::GET);
 
-        $this->assertSame("RoutedController", $strategy->route("/foo"));
-        $this->assertSame("RoutedController", $strategy->route("/foo/bar"));
-        $this->assertSame("RoutedController", $strategy->route("/foo/bar/baz"));
+        $this->assertSame("RoutedController", $strategy->route("/foo")->controllerClass);
+        $this->assertSame("RoutedController", $strategy->route("/foo/bar")->controllerClass);
+        $this->assertSame("RoutedController", $strategy->route("/foo/bar/baz")->controllerClass);
     }
 }

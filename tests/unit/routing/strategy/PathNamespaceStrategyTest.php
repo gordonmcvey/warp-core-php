@@ -34,7 +34,7 @@ class PathNamespaceStrategyTest extends TestCase
     {
         $strategy = new PathNamespaceStrategy($namespace, Verbs::GET);
 
-        $this->assertSame($expectation, $strategy->route($path));
+        $this->assertSame($expectation, $strategy->route($path)->controllerClass);
     }
 
     /**

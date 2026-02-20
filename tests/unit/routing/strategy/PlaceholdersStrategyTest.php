@@ -21,6 +21,7 @@ declare(strict_types=1);
 namespace gordonmcvey\WarpCore\test\unit\routing\strategy;
 
 use gordonmcvey\WarpCore\routing\strategy\PlaceholdersStrategy;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -33,7 +34,9 @@ class PlaceholdersStrategyTest extends TestCase
     public function itReturnsValidRoutes(string $routeFormat, string $path): void
     {
         $strategy = new PlaceholdersStrategy($routeFormat, "RoutedController");
-        $this->assertEquals("RoutedController", $strategy->route($path));
+        $route = $strategy->route($path);
+        $this->assertInstanceOf(Route::class, $route);
+        $this->assertEquals("RoutedController", $route->controllerClass);
     }
 
     /**

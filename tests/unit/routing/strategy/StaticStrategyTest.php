@@ -36,9 +36,9 @@ class StaticStrategyTest extends TestCase
             "/foo/bar/baz" => "FooBarBazController",
         ], Verbs::GET);
 
-        $this->assertSame("FooController", $strategy->route("/foo"));
-        $this->assertSame("FooBarController", $strategy->route("/foo/bar"));
-        $this->assertSame("FooBarBazController", $strategy->route("/foo/bar/baz"));
+        $this->assertSame("FooController", $strategy->route("/foo")->controllerClass);
+        $this->assertSame("FooBarController", $strategy->route("/foo/bar")->controllerClass);
+        $this->assertSame("FooBarBazController", $strategy->route("/foo/bar/baz")->controllerClass);
         $this->assertNull($strategy->route("/quux"));
     }
 
@@ -49,6 +49,6 @@ class StaticStrategyTest extends TestCase
 
         $this->assertNull($strategy->route("/foo"));
         $strategy->addRoute("/foo", "FooController");
-        $this->assertSame("FooController", $strategy->route("/foo"));
+        $this->assertSame("FooController", $strategy->route("/foo")->controllerClass);
     }
 }
