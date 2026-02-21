@@ -61,9 +61,7 @@ class Router implements RouterInterface
      */
     public function route(RequestInterface $request): string
     {
-        $uri = $request->uri();
-        $path = $this->pathValidator->getPath($uri);
-        $routesForPath = $this->getRoutesForPath($uri, $path);
+        $routesForPath = $this->getRoutesForPath($request);
         $verb = $request->verb();
 
         foreach ($routesForPath as $routeSpec) {
@@ -73,7 +71,7 @@ class Router implements RouterInterface
         }
 
         throw new MethodNotAllowed(
-            sprintf("No suitable controllers found for URI path %s that support method '%s'", $uri, $verb->value),
+            sprintf("No suitable controllers found for URI path %s that support method '%s'", $request->uri(), $verb->value),
         );
     }
 
@@ -81,8 +79,11 @@ class Router implements RouterInterface
      * @return array<RouteSpec>
      * @throws NoRouteToController If no strategies match the request path
      */
-    private function getRoutesForPath(string $uri, string $path): array
+    private function getRoutesForPath(RequestInterface $request): array
     {
+        $uri = $request->uri();
+        $path = $this->pathValidator->getPath($uri);
+
         if (!isset($this->routeSpecCache[$path])) {
             $this->routeSpecCache[$path] = [];
 
