@@ -71,7 +71,11 @@ class Router implements RouterInterface
         }
 
         throw new MethodNotAllowed(
-            sprintf("No suitable controllers found for URI path %s that support method '%s'", $request->uri(), $verb->value),
+            sprintf(
+                "No suitable controllers found for URI path %s that support method '%s'",
+                $request->uri(),
+                $verb->value,
+            ),
         );
     }
 
