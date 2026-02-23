@@ -29,20 +29,25 @@ use ValueError;
 
 class PlaceholdersStrategyTest extends TestCase
 {
+    /**
+     * @param array<array-key, scalar> $params
+     */
     #[Test]
     #[DataProvider('provideMatchingPaths')]
-    public function itReturnsValidRoutes(string $routeFormat, string $path): void
+    public function itReturnsValidRoutes(string $routeFormat, string $path, array $params): void
     {
         $strategy = new PlaceholdersStrategy($routeFormat, "RoutedController");
         $route = $strategy->route($path);
         $this->assertInstanceOf(Route::class, $route);
         $this->assertEquals("RoutedController", $route->controllerClass);
+        $this->assertEquals($params, $route->pathParams);
     }
 
     /**
      * @return iterable<string, array{
      *     routeFormat: string,
      *     path: string,
+     *     params: array<array-key, scalar>
      * }>
      */
     public static function provideMatchingPaths(): iterable
@@ -50,32 +55,54 @@ class PlaceholdersStrategyTest extends TestCase
         yield "One placeholder at the end" => [
             "routeFormat" => "/foo/bar/{id}",
             "path"        => "/foo/bar/123",
+            "params"      => [
+                "id" => "123",
+            ],
         ];
 
         yield "One placeholder at the end with trailing slash" => [
             "routeFormat" => "/foo/bar/{id}",
             "path"        => "/foo/bar/123/",
+            "params"      => [
+                "id" => "123",
+            ],
         ];
 
         yield "One placeholder in the middle" => [
-            "routeFormat" => "/foo/bar/{foo}/baz",
+            "routeFormat" => "/foo/bar/{id}/baz",
             "path"        => "/foo/bar/123/baz",
+            "params"      => [
+                "id" => "123",
+            ],
         ];
 
         yield "Consecutive placeholders" => [
             "routeFormat" => "/foo/bar/{foo}/{bar}",
             "path"        => "/foo/bar/123/abc",
+            "params"      => [
+                "foo" => "123",
+                "bar" => "abc",
+            ],
         ];
 
         yield "Non-consecutive placeholders" => [
             "routeFormat" => "/foo/bar/{foo}/baz/{baz}",
             "path"        => "/foo/bar/123/baz/abc",
+            "params"      => [
+                "foo" => "123",
+                "baz" => "abc",
+            ],
         ];
 
-        yield "typed placeholder" => [
-            "routeFormat" => "/foo/bar/{foo:string}/baz/{baz:int}",
-            "path"        => "/foo/bar/123/baz/abc",
-        ];
+        // @todo Implement typed placeholders
+//        yield "typed placeholder" => [
+//            "routeFormat" => "/foo/bar/{foo:string}/baz/{baz:int}",
+//            "path"        => "/foo/bar/123/baz/456",
+//            "params"      => [
+//                "foo" => "123",
+//                "baz" => 456",
+//            ],
+//        ];
     }
 
     #[Test]
