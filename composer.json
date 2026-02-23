@@ -23,7 +23,7 @@
         "php": ">=8.3.0",
         "ext-json": "*",
         "psr/log": "^2.0",
-        "gordonmcvey/warp-core-sdk": "^3.0.0rc3"
+        "gordonmcvey/warp-core-sdk": "^3.0.0rc4"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.0",

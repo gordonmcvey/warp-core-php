@@ -20,7 +20,6 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore;
 
-use Exception;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
@@ -28,10 +27,11 @@ use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
 use gordonmcvey\httpsupport\response\Response;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\middleware\MiddlewareProviderTrait;
-use gordonmcvey\WarpCore\sdk\exception\controller\BootstrapFailure;
+use gordonmcvey\WarpCore\sdk\interface\controller\ControllerFactoryInterface;
 use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\sdk\interface\error\ErrorHandlerInterface;
 use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareProviderInterface;
+use gordonmcvey\WarpCore\sdk\interface\routing\RouterInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
 use Throwable;
@@ -46,6 +46,8 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
     private ?LoggerInterface $logger = null;
 
     public function __construct(
+        private readonly RouterInterface $router,
+        private readonly ControllerFactoryInterface $controllerFactory,
         private readonly CallStackFactory $callStackFactory,
         private readonly ErrorHandlerInterface $errorHandler,
         private readonly ResponseSenderInterface $responseSender,
@@ -55,10 +57,14 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
     /**
      * Bootstrap and dispatch a controller from the given request
      */
-    public function bootstrap(RequestHandlerInterface|callable $controllerSource, RequestInterface $request): void
+    public function bootstrap(RequestInterface $request): void
     {
         try {
-            $controller = $this->getController($controllerSource, $request);
+            $route = $this->router->route($request);
+            if (!empty($route->pathParams)) {
+                $request->setExtraParams($route->pathParams);
+            }
+            $controller = $this->controllerFactory->make($route->controllerClass);
             $response = $this->dispatch($controller, $request);
         } catch (Throwable $e) {
             $this->logger?->error("[Core] [{$e->getCode()}] Error: {$e->getMessage()}");
@@ -70,21 +76,6 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
     public function setLogger(LoggerInterface $logger): void
     {
         $this->logger = $logger;
-    }
-
-    /**
-     * @throws Exception
-     */
-    private function getController(
-        RequestHandlerInterface|callable $controllerSource,
-        RequestInterface $request,
-    ): RequestHandlerInterface {
-        $controller = is_callable($controllerSource) ? $controllerSource($request) : $controllerSource;
-        if (!$controller instanceof RequestHandlerInterface) {
-            throw new BootstrapFailure("Unable to bootstrap");
-        }
-
-        return $controller;
     }
 
     private function dispatch(RequestHandlerInterface $controller, RequestInterface $request): ResponseInterface
