@@ -22,6 +22,7 @@ namespace gordonmcvey\WarpCore\routing;
 
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\WarpCore\routing\dto\RouteSpec;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 use gordonmcvey\WarpCore\sdk\exception\routing\InvalidPath;
 use gordonmcvey\WarpCore\sdk\exception\routing\MethodNotAllowed;
 use gordonmcvey\WarpCore\sdk\exception\routing\NoRouteToController;
@@ -59,14 +60,14 @@ class Router implements RouterInterface
      * @throws NoRouteToController If no strategies match the request path
      * @throws MethodNotAllowed if the request cannot be resolved to a controller class
      */
-    public function route(RequestInterface $request): string
+    public function route(RequestInterface $request): Route
     {
         $routesForPath = $this->getRoutesForPath($request);
         $verb = $request->verb();
 
         foreach ($routesForPath as $routeSpec) {
             if (in_array($verb, $routeSpec->verbs, true)) {
-                return $routeSpec->route->controllerClass;
+                return $routeSpec->route;
             }
         }
 

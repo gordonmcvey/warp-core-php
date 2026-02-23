@@ -41,6 +41,6 @@ readonly class Bootstrap
 
     public function __invoke(RequestInterface $request): RequestHandlerInterface
     {
-        return $this->controllerFactory->make($this->router->route($request));
+        return $this->controllerFactory->make($this->router->route($request)->controllerClass);
     }
 }

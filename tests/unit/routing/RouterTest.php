@@ -65,7 +65,7 @@ class RouterTest extends TestCase
 
         $router = new Router($pathValidator, $strategy);
 
-        $this->assertSame($controller, $router->route($request));
+        $this->assertSame($controller, $router->route($request)->controllerClass);
     }
 
     /**
@@ -138,7 +138,7 @@ class RouterTest extends TestCase
         $router = new Router($pathValidator, ...$strategies);
 
         foreach ($requests as $expectedVerb => $request) {
-            $this->assertSame($expectedVerb, $router->route($request));
+            $this->assertSame($expectedVerb, $router->route($request)->controllerClass);
         }
     }
 

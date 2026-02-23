@@ -34,7 +34,7 @@ class RouterTest extends TestCase
 
         $router = new Router(new RequestPathValidator(), new PathNamespaceStrategy(__NAMESPACE__, Verbs::GET));
 
-        $this->assertSame($route, $router->route($request));
+        $this->assertSame($route, $router->route($request)->controllerClass);
     }
 
     /**
@@ -91,7 +91,7 @@ class RouterTest extends TestCase
             new StaticStrategy(["/foo/bar/baz/quux" => "Foo\\Bar\\Baz\\Quux"], Verbs::GET),
         );
 
-        $this->assertSame($route, $router->route($request));
+        $this->assertSame($route, $router->route($request)->controllerClass);
     }
 
     /**
@@ -147,7 +147,7 @@ class RouterTest extends TestCase
             new StaticStrategy(["/" => Verbs::PATCH->value], Verbs::PATCH),
         );
 
-        $this->assertSame($route, $router->route($request));
+        $this->assertSame($route, $router->route($request)->controllerClass);
     }
 
     /**
