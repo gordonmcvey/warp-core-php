@@ -24,7 +24,6 @@ use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\request\psr7\ServerRequestAdaptor;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
-use gordonmcvey\WarpCore\Bootstrap;
 use gordonmcvey\WarpCore\controller\ControllerFactory;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
@@ -46,15 +45,13 @@ require_once BASE_PATH . '/vendor/autoload.php';
 
 // Demo
 (new FrontController(
+    new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
+    new ControllerFactory(),
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender()
 ))->addMiddleware(new RequestLogger())
     ->bootstrap(
-        new Bootstrap(
-            new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
-            new ControllerFactory(),
-        ),
         new ServerRequestAdaptor(
             new ServerRequest(
                 Verbs::GET->value,

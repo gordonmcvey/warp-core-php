@@ -24,17 +24,17 @@ namespace gordonmcvey\WarpCore\examples\middleware;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\Verbs;
-use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
+use gordonmcvey\WarpCore\controller\ControllerFactory;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\examples\controllers\HelloMiddleware;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\strategy\SingleControllerStrategy;
 use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
-use gordonmcvey\WarpCore\sdk\interface\middleware\MiddlewareProviderInterface;
 
 /**
  * Example using custom bootstrap with middleware
@@ -49,6 +49,21 @@ $_SERVER["REQUEST_METHOD"] = "GET";
 
 // Demo
 (new FrontController(
+    new Router(new RequestPathValidator(), new SingleControllerStrategy(HelloMiddleware::class, Verbs::GET)),
+    new class extends ControllerFactory{
+        public function make(string $path): RequestHandlerInterface
+        {
+            $controller = parent::make($path);
+            $controller
+                ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
+                ->addMiddleware(new AddParameter("controllerMessage2", "World"))
+                ->addMiddleware(new AddParameter("controllerMessage3", "Hello, World!"))
+                ->addMiddleware(new AddParameter("addedBy", __FUNCTION__))
+                ->addMiddleware(new RandomDelay())
+            ;
+            return $controller;
+        }
+    },
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender(),
@@ -58,21 +73,5 @@ $_SERVER["REQUEST_METHOD"] = "GET";
     ->addMiddleware(new AddParameter("globalMessage3", "Hello, World!"))
     ->addMiddleware(new RandomDelay())
     ->addMiddleware(new Profiler())
-    ->bootstrap(
-        function (RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET));
-            /** @var RequestHandlerInterface&MiddlewareProviderInterface $controller */
-            $controller = new ($router->route($request))();
-
-            $controller
-                ->addMiddleware(new AddParameter("controllerMessage1", "Hello"))
-                ->addMiddleware(new AddParameter("controllerMessage2", "World"))
-                ->addMiddleware(new AddParameter("controllerMessage3", "Hello, World!"))
-                ->addMiddleware(new AddParameter("addedBy", __FUNCTION__))
-                ->addMiddleware(new RandomDelay())
-            ;
-            return $controller;
-        },
-        Request::fromSuperGlobals(),
-    )
+    ->bootstrap(Request::fromSuperGlobals())
 ;

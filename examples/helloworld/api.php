@@ -22,9 +22,9 @@ namespace gordonmcvey\WarpCore\examples\helloworld;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\Verbs;
-use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
+use gordonmcvey\WarpCore\controller\ControllerFactory;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
@@ -32,10 +32,9 @@ use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\strategy\SingleControllerStrategy;
-use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 
 /**
- * Example using custom bootstrap function
+ * Example using the library-supplied Bootstrap class
  */
 
 define('BASE_PATH', dirname(__DIR__, 2));
@@ -47,17 +46,9 @@ $_SERVER["REQUEST_METHOD"] = "GET";
 
 // Demo
 (new FrontController(
+    new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
+    new ControllerFactory(),
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender(),
-))->bootstrap(
-    function (RequestInterface $request): RequestHandlerInterface {
-        $router = new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET));
-
-        /** @var RequestHandlerInterface $controller */
-        $controller = new ($router->route($request));
-
-        return $controller;
-    },
-    Request::fromSuperGlobals()
-);
+))->bootstrap(Request::fromSuperGlobals());

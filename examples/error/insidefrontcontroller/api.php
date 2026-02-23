@@ -21,12 +21,18 @@
 namespace gordonmcvey\WarpCore\examples\error\insidefrontcontroller;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
+use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
+use gordonmcvey\WarpCore\examples\controllers\Hello;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
-use stdClass;
+use gordonmcvey\WarpCore\routing\RequestPathValidator;
+use gordonmcvey\WarpCore\routing\Router;
+use gordonmcvey\WarpCore\routing\strategy\SingleControllerStrategy;
+use gordonmcvey\WarpCore\sdk\interface\controller\ControllerFactoryInterface;
+use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 
 /**
  * Example of error handling when a problem occurs inside the front controller.  Note that standard handling can only
@@ -43,12 +49,16 @@ $_SERVER["REQUEST_METHOD"] = "GET";
 
 // Demo
 (new FrontController(
+    new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
+    new class() implements ControllerFactoryInterface {
+        public function make(string $path): RequestHandlerInterface
+        {
+            throw new \Exception("The controller factory couldn't make a controller");
+        }
+        public function withArguments(...$arguments): self {return $this; }
+    },
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender(),
-))->bootstrap(
-    function () {
-        return new stdClass();
-    },
-    Request::fromSuperGlobals()
+))->bootstrap(Request::fromSuperGlobals()
 );

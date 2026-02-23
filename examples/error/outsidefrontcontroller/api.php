@@ -22,9 +22,9 @@ namespace gordonmcvey\WarpCore\examples\error\outsidefrontcontroller;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\Verbs;
-use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
+use gordonmcvey\WarpCore\controller\ControllerFactory;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\ErrorToException;
 use gordonmcvey\WarpCore\examples\controllers\Hello;
@@ -33,7 +33,6 @@ use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
 use gordonmcvey\WarpCore\routing\strategy\SingleControllerStrategy;
-use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\ShutdownHandler;
 
 /**
@@ -66,16 +65,10 @@ register_shutdown_function(new ShutdownHandler($responseSender, $errorHandler));
  */
 trigger_error("whoops", E_USER_ERROR);
 
-(new FrontController(new CallStackFactory(), $errorHandler, $responseSender))
-    ->bootstrap(
-        function (RequestInterface $request): RequestHandlerInterface {
-            $router = new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET));
-
-            /** @var RequestHandlerInterface $controller */
-            $controller = new ($router->route($request));
-
-            return $controller;
-        },
-        Request::fromSuperGlobals()
-    )
-;
+(new FrontController(
+    new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
+    new ControllerFactory(),
+    new CallStackFactory(),
+    $errorHandler,
+    $responseSender
+))->bootstrap(Request::fromSuperGlobals());

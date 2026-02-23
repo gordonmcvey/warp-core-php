@@ -1,9 +1,10 @@
 <?php
 
+
 /** @noinspection ALL */
 
 /**
- * Copyright © 2015 Docnet, 2025 Gordon McVey
+ * Copyright © 2015 Docnet, 2026 Gordon McVey
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +19,21 @@
  * limitations under the License.
  */
 
-namespace gordonmcvey\WarpCore\examples\bootstrap;
+namespace gordonmcvey\WarpCore\examples\helloworld;
 
 use gordonmcvey\httpsupport\enum\factory\StatusCodeFactory;
 use gordonmcvey\httpsupport\enum\Verbs;
+use gordonmcvey\httpsupport\request\payload\ArrayPayloadHandler;
 use gordonmcvey\httpsupport\request\Request;
 use gordonmcvey\httpsupport\response\sender\ResponseSender;
-use gordonmcvey\WarpCore\Bootstrap;
 use gordonmcvey\WarpCore\controller\ControllerFactory;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
-use gordonmcvey\WarpCore\examples\controllers\Hello;
+use gordonmcvey\WarpCore\examples\controllers\HelloParam;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
 use gordonmcvey\WarpCore\routing\RequestPathValidator;
 use gordonmcvey\WarpCore\routing\Router;
-use gordonmcvey\WarpCore\routing\strategy\SingleControllerStrategy;
+use gordonmcvey\WarpCore\routing\strategy\PlaceholdersStrategy;
 
 /**
  * Example using the library-supplied Bootstrap class
@@ -47,13 +48,18 @@ $_SERVER["REQUEST_METHOD"] = "GET";
 
 // Demo
 (new FrontController(
+    new Router(new RequestPathValidator(), new PlaceholdersStrategy("/{foo}/{bar}", HelloParam::class, Verbs::GET)),
+    new ControllerFactory(),
     new CallStackFactory(),
     new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
     new ResponseSender(),
-))->bootstrap(
-    new Bootstrap(
-        new Router(new RequestPathValidator(), new SingleControllerStrategy(Hello::class, Verbs::GET)),
-        new ControllerFactory(),
-    ),
-    Request::fromSuperGlobals(),
-);
+))->bootstrap(new Request(
+    [],
+    [],
+    [],
+    [
+        "REQUEST_URI" => "/foo-param/bar-param",
+        "REQUEST_METHOD" => "GET",
+    ],
+    new ArrayPayloadHandler($_POST),
+));
