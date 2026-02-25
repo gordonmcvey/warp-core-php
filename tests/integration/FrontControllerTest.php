@@ -27,7 +27,6 @@ use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\enum\Verbs;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
-use gordonmcvey\WarpCore\Bootstrap;
 use gordonmcvey\WarpCore\controller\ControllerFactory;
 use gordonmcvey\WarpCore\error\JsonErrorHandler;
 use gordonmcvey\WarpCore\FrontController;
@@ -38,7 +37,6 @@ use gordonmcvey\WarpCore\routing\strategy\PathNamespaceStrategy;
 use gordonmcvey\WarpCore\routing\strategy\SingleControllerStrategy;
 use gordonmcvey\WarpCore\sdk\exception\AccessDenied;
 use gordonmcvey\WarpCore\sdk\exception\Auth;
-use gordonmcvey\WarpCore\sdk\exception\controller\BootstrapFailure;
 use gordonmcvey\WarpCore\sdk\exception\controller\ControllerNotFound;
 use gordonmcvey\WarpCore\sdk\exception\routing\MethodNotAllowed;
 use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
@@ -60,113 +58,23 @@ class FrontControllerTest extends TestCase
     public function itHandlesATypicalDispatchCycle(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method('uri')->willReturn("http://example.com/");
+        $mockRequest->expects($this->once())->method('verb')->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
 
         $frontController = new FrontController(
-            new CallStackFactory(),
-            new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
-        );
-
-        $frontController->bootstrap(new ExampleController(), $mockRequest);
-
-        $this->assertSame(SuccessCodes::OK, $senderSpy->lastResponse->responseCode());
-        $this->assertSame("application/json", $senderSpy->lastResponse->contentType());
-        $this->assertSame("utf-8", $senderSpy->lastResponse->contentEncoding());
-        $this->assertJsonStringEqualsJsonString(
-            (string) json_encode(["message" => "Hello, World!"]),
-            $senderSpy->lastResponse->body(),
-        );
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Test]
-    public function itHandlesATypicalDispatchCycleWithFactoryFunction(): void
-    {
-        $mockRequest = $this->createMock(RequestInterface::class);
-        $senderSpy = new SenderSpy();
-
-        $frontController = new FrontController(
-            new CallStackFactory(),
-            new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
-        );
-
-        $frontController->bootstrap(fn() => new ExampleController(), $mockRequest);
-
-        $this->assertSame(SuccessCodes::OK, $senderSpy->lastResponse->responseCode());
-        $this->assertSame("application/json", $senderSpy->lastResponse->contentType());
-        $this->assertSame("utf-8", $senderSpy->lastResponse->contentEncoding());
-        $this->assertJsonStringEqualsJsonString(
-            (string) json_encode(["message" => "Hello, World!"]),
-            $senderSpy->lastResponse->body(),
-        );
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Test]
-    public function itHandlesATypicalDispatchCycleWithFactoryObject(): void
-    {
-        $mockRequest = $this->createMock(RequestInterface::class);
-        $senderSpy = new SenderSpy();
-
-        $frontController = new FrontController(
-            new CallStackFactory(),
-            new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
-        );
-
-        $frontController->bootstrap(
-            new readonly class {
-                public function __invoke(): RequestHandlerInterface
-                {
-                    return new ExampleController();
-                }
-            },
-            $mockRequest,
-        );
-
-        $this->assertSame(SuccessCodes::OK, $senderSpy->lastResponse->responseCode());
-        $this->assertSame("application/json", $senderSpy->lastResponse->contentType());
-        $this->assertSame("utf-8", $senderSpy->lastResponse->contentEncoding());
-        $this->assertJsonStringEqualsJsonString(
-            (string) json_encode(["message" => "Hello, World!"]),
-            $senderSpy->lastResponse->body(),
-        );
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Test]
-    public function itHandlesATypicalDispatchCycleWithFrameworkBootstrap(): void
-    {
-        $mockRequest = $this->createMock(RequestInterface::class);
-        $senderSpy = new SenderSpy();
-
-        $mockRequest->expects($this->any())->method("verb")->with()->willReturn(Verbs::GET);
-        $mockRequest->expects($this->any())->method("uri")->willReturn("https://example.com/");
-
-        $frontController = new FrontController(
-            new CallStackFactory(),
-            new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
-        );
-
-        $frontController->bootstrap(
-            new Bootstrap(
-                new Router(
-                    new RequestPathValidator(),
-                    new SingleControllerStrategy(ExampleController::class, Verbs::GET)
-                ),
-                new ControllerFactory(),
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET),
             ),
-            $mockRequest,
+            new ControllerFactory(),
+            new CallStackFactory(),
+            new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
+            $senderSpy,
         );
+
+        $frontController->bootstrap($mockRequest);
 
         $this->assertSame(SuccessCodes::OK, $senderSpy->lastResponse->responseCode());
         $this->assertSame("application/json", $senderSpy->lastResponse->contentType());
@@ -184,6 +92,9 @@ class FrontControllerTest extends TestCase
     public function itHandlesATypicalDispatchCycleWithGlobalMiddleware(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method('uri')->willReturn("http://example.com/");
+        $mockRequest->expects($this->once())->method('verb')->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
         $middleware = new class implements MiddlewareInterface
         {
@@ -204,12 +115,17 @@ class FrontControllerTest extends TestCase
         ;
 
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET),
+            ),
+            new ControllerFactory(),
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
             $senderSpy,
         );
 
-        $frontController->addMiddleware($middleware)->bootstrap(new ExampleController(), $mockRequest);
+        $frontController->addMiddleware($middleware)->bootstrap($mockRequest);
 
         $this->assertSame(SuccessCodes::OK, $senderSpy->lastResponse->responseCode());
         $this->assertSame("application/json", $senderSpy->lastResponse->contentType());
@@ -228,6 +144,9 @@ class FrontControllerTest extends TestCase
     public function itHandlesATypicalDispatchCycleWithControllerMiddleware(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method('uri')->willReturn("http://example.com/");
+        $mockRequest->expects($this->once())->method('verb')->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
         $middleware = new class implements MiddlewareInterface
         {
@@ -248,12 +167,28 @@ class FrontControllerTest extends TestCase
         ;
 
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET),
+            ),
+            new class($middleware) extends ControllerFactory
+            {
+                public function __construct(
+                    private readonly MiddlewareInterface $middleware,
+                ) {
+                }
+
+                public function make(string $path): RequestHandlerInterface
+                {
+                    return (new ExampleController())->addMiddleware($this->middleware);
+                }
+            },
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
             $senderSpy,
         );
 
-        $frontController->bootstrap((new ExampleController())->addMiddleware($middleware), $mockRequest);
+        $frontController->bootstrap($mockRequest);
 
         $this->assertSame(SuccessCodes::OK, $senderSpy->lastResponse->responseCode());
         $this->assertSame("application/json", $senderSpy->lastResponse->contentType());
@@ -269,64 +204,26 @@ class FrontControllerTest extends TestCase
      * @throws Exception
      */
     #[Test]
-    public function itHandlesABootStrappingError(): void
-    {
-        $mockRequest = $this->createMock(RequestInterface::class);
-        $senderSpy = new SenderSpy();
-
-        $frontController = new FrontController(
-            new CallStackFactory(),
-            new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
-        );
-
-        $frontController->bootstrap(fn() => "Hello", $mockRequest);
-        $responseBody = json_decode($senderSpy->lastResponse->body());
-
-        $this->assertSame(ServerErrorCodes::INTERNAL_SERVER_ERROR, $senderSpy->lastResponse->responseCode());
-        $this->assertSame("application/json", $senderSpy->lastResponse->contentType());
-
-        $this->assertObjectHasProperty("code", $responseBody);
-        $this->assertObjectHasProperty("detail", $responseBody);
-        $this->assertObjectHasProperty("file", $responseBody);
-        $this->assertObjectHasProperty("line", $responseBody);
-        $this->assertObjectHasProperty("msg", $responseBody);
-
-        $this->assertSame(500, $responseBody->code);
-        $this->assertStringStartsWith(BootstrapFailure::class, $responseBody->detail);
-        $this->assertStringEndsWith("FrontController.php", $responseBody->file);
-        $this->assertIsInt($responseBody->line);
-        $this->assertSame("Exception", $responseBody->msg);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Test]
     public function itHandlesARoutingPathError(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method('uri')->willReturn("http://example.com/");
+        $mockRequest->expects($this->once())->method('verb')->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
 
-        $mockRequest->expects($this->any())->method("verb")->with()->willReturn(Verbs::GET);
-        $mockRequest->expects($this->any())->method("uri")->willReturn("https://example.com/");
-
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new PathNamespaceStrategy(__NAMESPACE__, Verbs::GET),
+            ),
+            new ControllerFactory(),
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
             $senderSpy,
         );
 
-        $frontController->bootstrap(
-            new Bootstrap(
-                new Router(
-                    new RequestPathValidator(),
-                    new PathNamespaceStrategy(__NAMESPACE__, Verbs::GET),
-                ),
-                new ControllerFactory(),
-            ),
-            $mockRequest,
-        );
+        $frontController->bootstrap($mockRequest);
         $responseBody = json_decode($senderSpy->lastResponse->body());
 
         $this->assertSame(ClientErrorCodes::NOT_FOUND, $senderSpy->lastResponse->responseCode());
@@ -352,27 +249,23 @@ class FrontControllerTest extends TestCase
     public function itHandlesARoutingVerbError(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->atLeast(1))->method("uri")->willReturn("https://example.com/");
+        $mockRequest->expects($this->once())->method("verb")->with()->willReturn(Verbs::PUT);
+
         $senderSpy = new SenderSpy();
 
-        $mockRequest->expects($this->any())->method("verb")->with()->willReturn(Verbs::PUT);
-        $mockRequest->expects($this->any())->method("uri")->willReturn("https://example.com/");
-
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET)
+            ),
+            new ControllerFactory(),
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
             $senderSpy,
         );
 
-        $frontController->bootstrap(
-            new Bootstrap(
-                new Router(
-                    new RequestPathValidator(),
-                    new SingleControllerStrategy(ExampleController::class, Verbs::GET)
-                ),
-                new ControllerFactory(),
-            ),
-            $mockRequest,
-        );
+        $frontController->bootstrap($mockRequest);
         $responseBody = json_decode($senderSpy->lastResponse->body());
 
         $this->assertSame(ClientErrorCodes::METHOD_NOT_ALLOWED, $senderSpy->lastResponse->responseCode());
@@ -398,18 +291,29 @@ class FrontControllerTest extends TestCase
     public function itHandlesAuthError(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method("uri")->willReturn("https://example.com/");
+        $mockRequest->expects($this->once())->method("verb")->with()->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
 
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET)
+            ),
+            new class extends ControllerFactory
+            {
+                public function make(string $path): RequestHandlerInterface
+                {
+                    return new ExceptionController(Auth::class, ClientErrorCodes::UNAUTHORIZED->value);
+                }
+            },
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
+            $senderSpy
         );
 
-        $frontController->bootstrap(
-            new ExceptionController(Auth::class, ClientErrorCodes::UNAUTHORIZED->value),
-            $mockRequest,
-        );
+        $frontController->bootstrap($mockRequest,);
         $responseBody = json_decode($senderSpy->lastResponse->body());
 
         $this->assertSame(ClientErrorCodes::UNAUTHORIZED, $senderSpy->lastResponse->responseCode());
@@ -435,18 +339,29 @@ class FrontControllerTest extends TestCase
     public function itHandlesAccessDeniedError(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method("uri")->willReturn("https://example.com/");
+        $mockRequest->expects($this->once())->method("verb")->with()->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
 
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET)
+            ),
+            new class extends ControllerFactory
+            {
+                public function make(string $path): RequestHandlerInterface
+                {
+                    return new ExceptionController(AccessDenied::class, ClientErrorCodes::FORBIDDEN->value);
+                }
+            },
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
+            $senderSpy
         );
 
-        $frontController->bootstrap(
-            new ExceptionController(AccessDenied::class, ClientErrorCodes::FORBIDDEN->value),
-            $mockRequest,
-        );
+        $frontController->bootstrap($mockRequest);
         $responseBody = json_decode($senderSpy->lastResponse->body());
 
         $this->assertSame(ClientErrorCodes::FORBIDDEN, $senderSpy->lastResponse->responseCode());
@@ -472,18 +387,29 @@ class FrontControllerTest extends TestCase
     public function itHandlesGeneralError(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method("uri")->willReturn("https://example.com/");
+        $mockRequest->expects($this->once())->method("verb")->with()->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
 
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET)
+            ),
+            new class extends ControllerFactory
+            {
+                public function make(string $path): RequestHandlerInterface
+                {
+                    return new  ExceptionController(RuntimeException::class, 12345);
+                }
+            },
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
+            $senderSpy
         );
 
-        $frontController->bootstrap(
-            new ExceptionController(RuntimeException::class, 12345),
-            $mockRequest,
-        );
+        $frontController->bootstrap($mockRequest,);
         $responseBody = json_decode($senderSpy->lastResponse->body());
 
         $this->assertSame(ServerErrorCodes::INTERNAL_SERVER_ERROR, $senderSpy->lastResponse->responseCode());
@@ -509,18 +435,29 @@ class FrontControllerTest extends TestCase
     public function itHandlesGeneralErrorWithValidErrorCode(): void
     {
         $mockRequest = $this->createMock(RequestInterface::class);
+        $mockRequest->expects($this->once())->method("uri")->willReturn("https://example.com/");
+        $mockRequest->expects($this->once())->method("verb")->with()->willReturn(Verbs::GET);
+
         $senderSpy = new SenderSpy();
 
         $frontController = new FrontController(
+            new Router(
+                new RequestPathValidator(),
+                new SingleControllerStrategy(ExampleController::class, Verbs::GET)
+            ),
+            new class extends ControllerFactory
+            {
+                public function make(string $path): RequestHandlerInterface
+                {
+                    return new ExceptionController(RuntimeException::class, ClientErrorCodes::UNAVAILABLE_FOR_LEGAL_REASONS->value);
+                }
+            },
             new CallStackFactory(),
             new JsonErrorHandler(new StatusCodeFactory(), exposeDetails: true),
-            $senderSpy,
+            $senderSpy
         );
 
-        $frontController->bootstrap(
-            new ExceptionController(RuntimeException::class, ClientErrorCodes::UNAVAILABLE_FOR_LEGAL_REASONS->value),
-            $mockRequest,
-        );
+        $frontController->bootstrap($mockRequest,);
         $responseBody = json_decode($senderSpy->lastResponse->body());
 
         $this->assertSame(ClientErrorCodes::UNAVAILABLE_FOR_LEGAL_REASONS, $senderSpy->lastResponse->responseCode());

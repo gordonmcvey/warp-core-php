@@ -27,197 +27,109 @@ use gordonmcvey\httpsupport\interface\response\ResponseSenderInterface;
 use gordonmcvey\WarpCore\FrontController;
 use gordonmcvey\WarpCore\middleware\CallStack;
 use gordonmcvey\WarpCore\middleware\CallStackFactory;
+use gordonmcvey\WarpCore\sdk\dto\routing\Route;
 use gordonmcvey\WarpCore\sdk\exception\AccessDenied;
 use gordonmcvey\WarpCore\sdk\exception\Auth;
-use gordonmcvey\WarpCore\sdk\exception\controller\BootstrapFailure;
 use gordonmcvey\WarpCore\sdk\exception\routing\MethodNotAllowed;
+use gordonmcvey\WarpCore\sdk\interface\controller\ControllerFactoryInterface;
 use gordonmcvey\WarpCore\sdk\interface\controller\RequestHandlerInterface;
 use gordonmcvey\WarpCore\sdk\interface\error\ErrorHandlerInterface;
+use gordonmcvey\WarpCore\sdk\interface\routing\RouterInterface;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 
 class FrontControllerTest extends TestCase
 {
+    private RouterInterface&MockObject $router;
+
+    private ControllerFactoryInterface&MockObject $controllerFactory;
+
+    private CallStackFactory&MockObject $callStackFactory;
+
+    private ErrorHandlerInterface&MockObject $errorHandler;
+
+    private ResponseSenderInterface&MockObject $sender;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->router = $this->createMock(RouterInterface::class);
+        $this->controllerFactory = $this->createMock(ControllerFactoryInterface::class);
+        $this->callStackFactory = $this->createMock(CallStackFactory::class);
+        $this->errorHandler = $this->createMock(ErrorHandlerInterface::class);
+        $this->sender = $this->createMock(ResponseSenderInterface::class);
+    }
+
     /**
      * @throws Exception
      */
     #[Test]
     public function itHandlesATypicalDispatchCycle(): void
     {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
         $mockCallStack = $this->createMock(CallStack::class);
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
 
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
-
-        $mockCallStackFactory->expects($this->once())
-            ->method("make")
-            ->with($mockController, $frontController)
-            ->willReturn($mockCallStack)
-        ;
-
-        $mockController->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willReturn($mockResponse)
-        ;
-
-        $mockCallStack->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willReturn($mockController->dispatch($mockRequest));
-
-        $mockErrorHandler->expects($this->never())
-            ->method("handle")
-        ;
-
-        $mockSender->expects($this->once())
-            ->method("send")
-            ->with($mockResponse)
-            ->willReturnSelf()
-        ;
-
-        $frontController->bootstrap($mockController, $mockRequest);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Test]
-    public function itHandlesATypicalDispatchCycleWithControllerFactoryFunction(): void
-    {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
-        $mockCallStack = $this->createMock(CallStack::class);
-        $mockController = $this->createMock(RequestHandlerInterface::class);
-        $mockRequest = $this->createMock(RequestInterface::class);
-        $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
-
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
-
-        $mockCallStackFactory->expects($this->once())
-            ->method("make")
-            ->with($mockController, $frontController)
-            ->willReturn($mockCallStack)
-        ;
-
-        $mockController->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willReturn($mockResponse)
-        ;
-
-        $mockCallStack->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willReturn($mockController->dispatch($mockRequest));
-
-        $mockErrorHandler->expects($this->never())
-            ->method("handle")
-        ;
-
-        $mockSender->expects($this->once())
-            ->method("send")
-            ->with($mockResponse)
-            ->willReturnSelf()
-        ;
-
-        $frontController->bootstrap(fn() => $mockController, $mockRequest);
-    }
-
-    /**
-     * @throws Exception
-     */
-    #[Test]
-    public function itHandlesATypicalDispatchCycleWithControllerFactoryObject(): void
-    {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
-        $mockCallStack = $this->createMock(CallStack::class);
-        $mockController = $this->createMock(RequestHandlerInterface::class);
-        $mockRequest = $this->createMock(RequestInterface::class);
-        $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
-
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
-
-        $mockCallStackFactory->expects($this->once())
-            ->method("make")
-            ->with($mockController, $frontController)
-            ->willReturn($mockCallStack)
-        ;
-
-        $mockController->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willReturn($mockResponse)
-        ;
-
-        $mockCallStack->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willReturn($mockController->dispatch($mockRequest));
-
-        $mockErrorHandler->expects($this->never())
-            ->method("handle")
-        ;
-
-        $mockSender->expects($this->once())
-            ->method("send")
-            ->with($mockResponse)
-            ->willReturnSelf()
-        ;
-
-        $frontController->bootstrap(
-            new readonly class ($mockController) {
-                public function __construct(private RequestHandlerInterface $controller)
-                {
-                }
-                public function __invoke(): RequestHandlerInterface
-                {
-                    return $this->controller;
-                }
-            },
-            $mockRequest,
+        $frontController = new FrontController(
+            $this->router,
+            $this->controllerFactory,
+            $this->callStackFactory,
+            $this->errorHandler,
+            $this->sender,
         );
-    }
 
-    /**
-     * @throws Exception
-     */
-    #[Test]
-    public function itHandlesABootstrappingError(): void
-    {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
-        $mockRequest = $this->createMock(RequestInterface::class);
-        $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-
-        $mockErrorHandler->expects($this->once())
-            ->method("handle")
-            ->with($this->isInstanceOf(BootstrapFailure::class))
-            ->willReturn($mockResponse)
+        $this->router
+            ->expects($this->once())
+            ->method('route')
+            ->with($mockRequest)
+            ->willReturn(new Route(RequestHandlerInterface::class))
         ;
 
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
+        $this->controllerFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with(RequestHandlerInterface::class)
+            ->willReturn($mockController)
+        ;
 
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
+        $this->callStackFactory
+            ->expects($this->once())
+            ->method("make")
+            ->with($mockController, $frontController)
+            ->willReturn($mockCallStack)
+        ;
 
-        $mockSender->expects($this->once())
+        $mockCallStack
+            ->expects($this->once())
+            ->method("dispatch")
+            ->with($mockRequest)
+            ->willReturnCallback(fn() => $mockController->dispatch($mockRequest))
+        ;
+
+        $this->errorHandler
+            ->expects($this->never())
+            ->method("handle")
+        ;
+
+        $this->sender
+            ->expects($this->once())
             ->method("send")
             ->with($mockResponse)
             ->willReturnSelf()
         ;
 
-        $frontController->bootstrap(fn() => "Hello", $mockRequest);
+        $mockController->expects($this->once())
+            ->method("dispatch")
+            ->with($mockRequest)
+            ->willReturn($mockResponse)
+        ;
+
+        $frontController->bootstrap($mockRequest);
     }
 
     /**
@@ -226,28 +138,49 @@ class FrontControllerTest extends TestCase
     #[Test]
     public function itHandlesARoutingError(): void
     {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
 
-        $mockErrorHandler->expects($this->once())
+        $frontController = new FrontController(
+            $this->router,
+            $this->controllerFactory,
+            $this->callStackFactory,
+            $this->errorHandler,
+            $this->sender,
+        );
+
+        $this->router
+            ->expects($this->once())
+            ->method('route')
+            ->with($mockRequest)
+            ->willThrowException(new MethodNotAllowed())
+        ;
+
+        $this->controllerFactory
+            ->expects($this->never())
+            ->method('make')
+        ;
+
+        $this->callStackFactory
+            ->expects($this->never())
+            ->method("make")
+        ;
+
+        $this->errorHandler
+            ->expects($this->once())
             ->method("handle")
             ->with($this->isInstanceOf(MethodNotAllowed::class))
             ->willReturn($mockResponse)
         ;
 
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
-
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
-
-        $mockSender->expects($this->once())
+        $this->sender
+            ->expects($this->once())
             ->method("send")
             ->with($mockResponse)
             ->willReturnSelf()
         ;
 
-        $frontController->bootstrap(fn() => throw new MethodNotAllowed(), $mockRequest);
+        $frontController->bootstrap($mockRequest);
     }
 
     /**
@@ -256,41 +189,69 @@ class FrontControllerTest extends TestCase
     #[Test]
     public function itHandlesAuthError(): void
     {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
         $mockCallStack = $this->createMock(CallStack::class);
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
 
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
+        $frontController = new FrontController(
+            $this->router,
+            $this->controllerFactory,
+            $this->callStackFactory,
+            $this->errorHandler,
+            $this->sender,
+        );
 
-        $mockCallStackFactory->expects($this->once())
+        $this->router
+            ->expects($this->once())
+            ->method('route')
+            ->with($mockRequest)
+            ->willReturn(new Route(RequestHandlerInterface::class))
+        ;
+
+        $this->callStackFactory
+            ->expects($this->once())
             ->method("make")
             ->with($mockController, $frontController)
             ->willReturn($mockCallStack)
         ;
 
-        $mockCallStack->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willThrowException(new Auth())
+        $this->controllerFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with(RequestHandlerInterface::class)
+            ->willReturn($mockController)
         ;
 
-        $mockErrorHandler->expects($this->once())
+        $this->errorHandler
+            ->expects($this->once())
             ->method("handle")
             ->with($this->isInstanceOf(Auth::class))
             ->willReturn($mockResponse)
         ;
 
-        $mockSender->expects($this->once())
+        $this->sender
+            ->expects($this->once())
             ->method("send")
             ->with($mockResponse)
             ->willReturnSelf()
         ;
 
-        $frontController->bootstrap($mockController, $mockRequest);
+        $mockCallStack
+            ->expects($this->once())
+            ->method("dispatch")
+            ->with($mockRequest)
+            ->willReturnCallback(fn() => $mockController->dispatch($mockRequest))
+        ;
+
+        $mockController
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($mockRequest)
+            ->willThrowException(new Auth())
+        ;
+
+        $frontController->bootstrap($mockRequest);
     }
 
     /**
@@ -299,40 +260,70 @@ class FrontControllerTest extends TestCase
     #[Test]
     public function itHandlesAccessDeniedError(): void
     {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
         $mockCallStack = $this->createMock(CallStack::class);
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
 
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
+        $frontController = new FrontController(
+            $this->router,
+            $this->controllerFactory,
+            $this->callStackFactory,
+            $this->errorHandler,
+            $this->sender,
+        );
 
-        $mockCallStackFactory->expects($this->once())
+        $this->router
+            ->expects($this->once())
+            ->method('route')
+            ->with($mockRequest)
+            ->willReturn(new Route(RequestHandlerInterface::class))
+        ;
+
+        $this->callStackFactory
+            ->expects($this->once())
             ->method("make")
             ->with($mockController, $frontController)
             ->willReturn($mockCallStack)
         ;
 
-        $mockCallStack->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willThrowException(new AccessDenied())
+        $this->controllerFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with(RequestHandlerInterface::class)
+            ->willReturn($mockController)
         ;
 
-        $mockErrorHandler->expects($this->once())
+        $this->errorHandler
+            ->expects($this->once())
             ->method("handle")
             ->with($this->isInstanceOf(AccessDenied::class))
-            ->willReturn($mockResponse);
+            ->willReturn($mockResponse)
+        ;
 
-        $mockSender->expects($this->once())
+        $this->sender
+            ->expects($this->once())
             ->method("send")
             ->with($mockResponse)
             ->willReturnSelf()
         ;
 
-        $frontController->bootstrap($mockController, $mockRequest);
+        $mockCallStack
+            ->expects($this->once())
+            ->method("dispatch")
+            ->with($mockRequest)
+            ->willReturnCallback(fn() => $mockController->dispatch($mockRequest))
+        ;
+
+        $mockController
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($mockRequest)
+            ->willThrowException(new AccessDenied())
+        ;
+
+        $frontController->bootstrap($mockRequest);
+
     }
 
     /**
@@ -341,41 +332,69 @@ class FrontControllerTest extends TestCase
     #[Test]
     public function itHandlesGeneralError(): void
     {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
         $mockCallStack = $this->createMock(CallStack::class);
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
 
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
+        $frontController = new FrontController(
+            $this->router,
+            $this->controllerFactory,
+            $this->callStackFactory,
+            $this->errorHandler,
+            $this->sender,
+        );
 
-        $mockCallStackFactory->expects($this->once())
+        $this->router
+            ->expects($this->once())
+            ->method('route')
+            ->with($mockRequest)
+            ->willReturn(new Route(RequestHandlerInterface::class))
+        ;
+
+        $this->callStackFactory
+            ->expects($this->once())
             ->method("make")
             ->with($mockController, $frontController)
             ->willReturn($mockCallStack)
         ;
 
-        $mockCallStack->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willThrowException(new RuntimeException(code: 12345))
+        $this->controllerFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with(RequestHandlerInterface::class)
+            ->willReturn($mockController)
         ;
 
-        $mockErrorHandler->expects($this->once())
+        $this->errorHandler
+            ->expects($this->once())
             ->method("handle")
-            ->with($this->isInstanceOf(RuntimeException::class))
+            ->with($this->isInstanceOf(AccessDenied::class))
             ->willReturn($mockResponse)
         ;
 
-        $mockSender->expects($this->once())
+        $this->sender
+            ->expects($this->once())
             ->method("send")
             ->with($mockResponse)
             ->willReturnSelf()
         ;
 
-        $frontController->bootstrap($mockController, $mockRequest);
+        $mockCallStack
+            ->expects($this->once())
+            ->method("dispatch")
+            ->with($mockRequest)
+            ->willReturnCallback(fn() => $mockController->dispatch($mockRequest))
+        ;
+
+        $mockController
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($mockRequest)
+            ->willThrowException(new AccessDenied())
+        ;
+
+        $frontController->bootstrap($mockRequest);
     }
 
     /**
@@ -384,41 +403,72 @@ class FrontControllerTest extends TestCase
     #[Test]
     public function itHandlesGeneralErrorWithValidErrorCode(): void
     {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
         $mockCallStack = $this->createMock(CallStack::class);
         $mockController = $this->createMock(RequestHandlerInterface::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockResponse = $this->createMock(ResponseInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
 
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
+        $frontController = new FrontController(
+            $this->router,
+            $this->controllerFactory,
+            $this->callStackFactory,
+            $this->errorHandler,
+            $this->sender,
+        );
 
-        $mockCallStackFactory->expects($this->once())
+        $this->router
+            ->expects($this->once())
+            ->method('route')
+            ->with($mockRequest)
+            ->willReturn(new Route(RequestHandlerInterface::class))
+        ;
+
+        $this->callStackFactory
+            ->expects($this->once())
             ->method("make")
             ->with($mockController, $frontController)
             ->willReturn($mockCallStack)
         ;
 
-        $mockCallStack->expects($this->once())
-            ->method("dispatch")
-            ->with($mockRequest)
-            ->willThrowException(new RuntimeException(code: ClientErrorCodes::UNAVAILABLE_FOR_LEGAL_REASONS->value))
+        $this->controllerFactory
+            ->expects($this->once())
+            ->method('make')
+            ->with(RequestHandlerInterface::class)
+            ->willReturn($mockController)
         ;
 
-        $mockErrorHandler->expects($this->once())
+        $this->errorHandler
+            ->expects($this->once())
             ->method("handle")
-            ->with($this->isInstanceOf(RuntimeException::class))
+            ->with($this->callback(
+                fn($e): bool => $e instanceof RuntimeException
+                    && ClientErrorCodes::UNAVAILABLE_FOR_LEGAL_REASONS->value === $e->getCode()
+            ))
             ->willReturn($mockResponse)
         ;
 
-        $mockSender->expects($this->once())
+        $this->sender
+            ->expects($this->once())
             ->method("send")
             ->with($mockResponse)
             ->willReturnSelf()
         ;
 
-        $frontController->bootstrap($mockController, $mockRequest);
+        $mockCallStack
+            ->expects($this->once())
+            ->method("dispatch")
+            ->with($mockRequest)
+            ->willReturnCallback(fn() => $mockController->dispatch($mockRequest))
+        ;
+
+        $mockController
+            ->expects($this->once())
+            ->method('dispatch')
+            ->with($mockRequest)
+            ->willThrowException(new RuntimeException(code: ClientErrorCodes::UNAVAILABLE_FOR_LEGAL_REASONS->value))
+        ;
+
+        $frontController->bootstrap($mockRequest);
     }
 
     /**
@@ -427,13 +477,18 @@ class FrontControllerTest extends TestCase
     #[Test]
     public function itLogsErrorsIfGivenALogger(): void
     {
-        $mockCallStackFactory = $this->createMock(CallStackFactory::class);
         $mockRequest = $this->createMock(RequestInterface::class);
         $mockLogger = $this->createMock(LoggerInterface::class);
-        $mockErrorHandler = $this->createMock(ErrorHandlerInterface::class);
-        $mockSender = $this->createMock(ResponseSenderInterface::class);
 
-        $frontController = new FrontController($mockCallStackFactory, $mockErrorHandler, $mockSender);
+        $frontController = new FrontController(
+            $this->router,
+            $this->controllerFactory,
+            $this->callStackFactory,
+            $this->errorHandler,
+            $this->sender,
+        );
+
+        $this->router->method('route')->willThrowException(new RuntimeException());
 
         $mockLogger->expects($this->once())
             ->method("error")
@@ -441,6 +496,6 @@ class FrontControllerTest extends TestCase
         ;
 
         $frontController->setLogger($mockLogger);
-        $frontController->bootstrap(fn() => "Hello", $mockRequest);
+        $frontController->bootstrap($mockRequest);
     }
 }
