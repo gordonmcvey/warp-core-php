@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace gordonmcvey\WarpCore;
 
+use gordonmcvey\httpsupport\enum\statuscodes\ServerErrorCodes;
 use gordonmcvey\httpsupport\enum\statuscodes\SuccessCodes;
 use gordonmcvey\httpsupport\interface\request\RequestInterface;
 use gordonmcvey\httpsupport\interface\response\ResponseInterface;
@@ -67,7 +68,11 @@ class FrontController implements MiddlewareProviderInterface, LoggerAwareInterfa
             $controller = $this->controllerFactory->make($route->controllerClass);
             $response = $this->dispatch($controller, $request);
         } catch (Throwable $e) {
-            $this->logger?->error("[Core] [{$e->getCode()}] Error: {$e->getMessage()}");
+            if ($this->logger) {
+                $code = $e->getCode() ?: ServerErrorCodes::INTERNAL_SERVER_ERROR->value;
+                $message = $e->getMessage() ?: "Unable to bootstrap";
+                $this->logger->error("[Core] [$code] Error: $message");
+            }
             $response = $this->errorHandler->handle($e);
         }
         $this->responseSender->send($response);
