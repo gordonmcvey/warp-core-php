@@ -63,7 +63,7 @@ class RequestPathValidator
             );
         }
 
-        return (string) $parsed["path"];
+        return (string) ($parsed["path"] ?? "/");
     }
 
     /**

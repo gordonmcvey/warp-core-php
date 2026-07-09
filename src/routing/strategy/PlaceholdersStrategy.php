@@ -42,8 +42,11 @@ class PlaceholdersStrategy implements RoutingStrategyInterface
     // The generated path matching regex, we defer generating the actual regex until the first time route() is called
     private ?string $pathPattern = null;
 
-    public function __construct(private readonly string $pathTemplate, private readonly string $controllerClass, Verbs ...$verbs)
-    {
+    public function __construct(
+        private readonly string $pathTemplate,
+        private readonly string $controllerClass,
+        Verbs ...$verbs,
+    ) {
         if (str_contains($this->pathTemplate, ";")) {
             throw new ValueError("Path template cannot contain delimiter character ;");
         }
